@@ -1,0 +1,13 @@
+node_modules
+.next
+.data
+.data-e2e
+.env
+.env.local
+next-env.d.ts
+*.tsbuildinfo
+test-results
+playwright-report
+
+# programas baixados para teste no celular
+.tools/

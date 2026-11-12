@@ -1,0 +1,8 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment: { POSTGRES_USER: prumo, POSTGRES_PASSWORD: prumo, POSTGRES_DB: prumo }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+volumes:
+  pgdata:

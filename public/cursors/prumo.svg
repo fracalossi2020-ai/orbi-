@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Cursor PRUMO: o prumo de pedreiro inclinado, a ponta é o ponto que clica. -->
+  <g transform="translate(3 3) rotate(-40)">
+    <path d="M0 21.1V27.4" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0 21.1V27.4" stroke="#0F2C35" stroke-width="1.2" stroke-linecap="round"/>
+    <circle cx="0" cy="28.6" r="1.4" fill="#0F2C35" stroke="#fff" stroke-width="1"/>
+    <path d="M0 0L7 13.5C8.2 16 7 18.5 4 18.5H-4C-7 18.5-8.2 16-7 13.5Z" fill="#0F2C35" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M0 1.4L6 13.8C7 16 6 17.7 3.8 17.7H0Z" fill="#176B5B"/>
+    <rect x="-2.6" y="18.4" width="5.2" height="2.8" rx=".9" fill="#B9D9C9" stroke="#fff" stroke-width="1"/>
+  </g>
+</svg>

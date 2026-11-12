@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-brand: var(--brand-text, var(--primary));
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-deep: var(--deep);
+  --color-on-deep: var(--on-deep);
+  --color-on-deep-muted: var(--on-deep-muted);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --font-display: var(--font-display-face);
+  --font-body: var(--font-body-face);
+  --radius-ui: var(--r);
+  --radius-card: var(--r-lg);
+}
+
+/* ---------- Identidade Orbi (manual da marca) ----------
+ * Azul Elétrico #0356C5 (principal) · Azul Noturno #0A1E3D (secundária) · Preto Profundo #02060E
+ * Cinza Neutro #E6E8EB · Branco. Degradê do símbolo: ciano #00E1FF → azul #0A3BFF. Fonte: Inter.
+ */
+:root, [data-identity] {
+  --bg: #F5F7FA; --surface: #FFFFFF; --surface-2: #EDF0F4; --ink: #02060E; --muted: #536071; --line: #E1E5EA;
+  --primary: #0356C5; --on-primary: #FFFFFF; --accent: #0A1E3D; --on-accent: #FFFFFF; --mark: #5CC8FF; --accent-strong: #0A1E3D;
+  --deep: #02060E; --on-deep: #F5F7FA; --on-deep-muted: #9AA8BD;
+  --brand-text: #0356C5; --cta: #0356C5; --cta-ink: #FFFFFF;
+  --grad: linear-gradient(115deg, #00E1FF 0%, #0B6BFF 48%, #0A3BFF 72%, #0356C5 100%);
+  --glow: #1F6BFF;
+  --r: 999px; --r-lg: 22px;
+  --font-display-face: var(--f-inter-tight), var(--f-inter); --font-body-face: var(--f-inter);
+  --d-weight: 700; --d-track: -0.022em; --d-case: none; --d-leading: .98;
+}
+
+/* Modo escuro: Preto Profundo de fundo, azul mais claro para manter o contraste */
+[data-theme="dark"], [data-theme="dark"] [data-identity] {
+  --bg: #02060E; --surface: #0A1222; --surface-2: #111C30; --ink: #F3F6FA; --muted: #95A2B6; --line: #1B2840;
+  --primary: #2E7BFF; --on-primary: #FFFFFF; --accent: #8FC3FF; --on-accent: #02060E; --accent-strong: #8FC3FF; --deep: #000206;
+  --brand-text: #6AA8FF; --cta: #2E7BFF;
+}
+
+:root { --danger: #B3261E; --ok: #1B7F5A; --warn: #8A5A00; }
+[data-theme="dark"] { --danger: #FF8A80; --ok: #6FD6AE; --warn: #F6C66A; }
+
+/* Sem escolha salva, segue o tema do aparelho. Mesmos valores do bloco escuro. */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme]), :root:not([data-theme]) [data-identity] {
+  --bg: #02060E; --surface: #0A1222; --surface-2: #111C30; --ink: #F3F6FA; --muted: #95A2B6; --line: #1B2840;
+  --primary: #2E7BFF; --on-primary: #FFFFFF; --accent: #8FC3FF; --on-accent: #02060E; --accent-strong: #8FC3FF; --deep: #000206;
+  --brand-text: #6AA8FF; --cta: #2E7BFF;
+}
+:root:not([data-theme]) { --danger: #FF8A80; --ok: #6FD6AE; --warn: #F6C66A; }
+:root:not([data-theme]) .btn-danger { color: #2a0d0b; }
+}
+
+/* Texto e traços com o degradê do símbolo */
+.text-grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/*
+ * Fundo das partes escuras: em vez de preto chapado, dois brilhos suaves da marca (azul no alto, ciano embaixo)
+ * e uma grade de pontos quase invisível, como papel milimetrado. Vale para as seções escuras e para o modo escuro.
+ */
+/* Os brilhos ficam longe das bordas de cima e de baixo: uma seção escura emenda na outra sem linha. */
+section.on-deep.bg-deep {
+  background-image:
+    radial-gradient(45% 32% at 92% 45%, rgb(11 107 255 / .14), transparent 100%),
+    radial-gradient(38% 28% at 6% 62%, rgb(0 225 255 / .06), transparent 100%);
+}
+.orbit-grid { background-image: radial-gradient(rgb(245 247 250 / .09) 1px, transparent 1.3px); background-size: 26px 26px; -webkit-mask-image: radial-gradient(70% 70% at 50% 40%, #000 20%, transparent 75%); mask-image: radial-gradient(70% 70% at 50% 40%, #000 20%, transparent 75%); }
+[data-theme="dark"] section.bg-bg, [data-theme="dark"] section.bg-surface {
+  background-image: radial-gradient(50% 40% at 90% 10%, rgb(11 107 255 / .12), transparent 60%), radial-gradient(40% 40% at 5% 95%, rgb(0 225 255 / .05), transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) section.bg-bg, :root:not([data-theme]) section.bg-surface {
+    background-image: radial-gradient(50% 40% at 90% 10%, rgb(11 107 255 / .12), transparent 60%), radial-gradient(40% 40% at 5% 95%, rgb(0 225 255 / .05), transparent 60%);
+  }
+}
+
+/* ---------- Base ---------- */
+html { background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { font-family: var(--font-body-face), system-ui, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-feature-settings: "tnum" 0; }
+p { text-wrap: pretty; }
+::selection { background: color-mix(in srgb, var(--primary) 24%, transparent); }
+.scope { background: var(--bg); color: var(--ink); font-family: var(--font-body-face), system-ui, sans-serif; }
+.display { font-family: var(--font-display-face), system-ui, sans-serif; font-weight: var(--d-weight); letter-spacing: var(--d-track); text-transform: var(--d-case); line-height: var(--d-leading); text-wrap: balance; }
+.num { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 6px; }
+.on-deep :focus-visible { outline-color: var(--on-deep); }
+button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
+
+/* ---------- Botões ---------- */
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 48px; padding: .7rem 1.4rem; border-radius: var(--r); font-weight: 600; letter-spacing: -.005em; line-height: 1.1; overflow: hidden; transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .2s, background-color .2s, color .2s, opacity .2s; cursor: pointer; white-space: nowrap; }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary { background: var(--primary); color: var(--on-primary); box-shadow: 0 1px 0 rgb(255 255 255 / .16) inset, 0 1px 2px rgb(0 0 0 / .1), 0 8px 20px -10px color-mix(in srgb, var(--primary) 70%, transparent); }
+.btn-primary:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 1px 0 rgb(255 255 255 / .16) inset, 0 1px 2px rgb(0 0 0 / .1), 0 14px 28px -12px color-mix(in srgb, var(--primary) 80%, transparent); }
+.btn-ghost { background: transparent; color: var(--ink); box-shadow: 0 0 0 1px var(--line) inset; }
+.btn-ghost:not(:disabled):hover { background: var(--surface-2); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 30%, var(--line)) inset; }
+.btn-soft { background: var(--surface-2); color: var(--ink); }
+.btn-soft:not(:disabled):hover { background: color-mix(in srgb, var(--surface-2) 80%, var(--ink) 8%); }
+.btn-danger { background: var(--danger); color: #fff; }
+[data-theme="dark"] .btn-danger { color: #2a0d0b; }
+.btn-on-deep { background: var(--cta, var(--on-deep)); color: var(--cta-ink, var(--deep)); }
+.btn-on-deep:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -14px color-mix(in srgb, var(--cta, #000) 80%, transparent); }
+.btn-line-deep { color: var(--on-deep); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--on-deep) 45%, transparent) inset; }
+.btn-line-deep:hover { box-shadow: 0 0 0 1.5px var(--on-deep) inset; transform: translateY(-2px); }
+.btn-lg { min-height: 56px; padding: .9rem 1.7rem; font-size: 1.05rem; }
+.btn-sm { min-height: 38px; padding: .4rem .9rem; font-size: .875rem; }
+
+/* Campos preenchidos: fundo suave, sem borda; o foco acende um anel com a cor da marca */
+.input { width: 100%; min-height: 50px; padding: .7rem 1rem; border-radius: min(var(--r), 14px); background: var(--surface-2); color: var(--ink); box-shadow: 0 0 0 1px transparent inset; transition: box-shadow .15s, background-color .15s; }
+.input::placeholder { color: color-mix(in srgb, var(--muted) 85%, transparent); }
+.input:hover { box-shadow: 0 0 0 1px var(--line) inset; }
+.input:focus { outline: none; background: var(--surface); box-shadow: 0 0 0 2px var(--primary) inset, 0 0 0 5px color-mix(in srgb, var(--primary) 16%, transparent); }
+.input[readonly] { color: var(--muted); }
+select.input { appearance: auto; }
+.card { background: var(--surface); border-radius: var(--r-lg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--line) 85%, transparent), 0 1px 2px rgb(16 24 40 / .04), 0 16px 36px -28px rgb(16 24 40 / .28); }
+/* Barras translúcidas sobre o conteúdo */
+/* Futurista com função: vidro sobre o tom profundo, grade de coordenadas e rótulos de instrumento */
+@utility glass-deep { background-color: color-mix(in srgb, var(--on-deep) 7%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--on-deep) 13%, transparent); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); }
+/* Etiqueta escura sobre o mapa claro */
+@utility glass-map { background-color: color-mix(in srgb, var(--deep) 86%, transparent); color: var(--on-deep); box-shadow: 0 6px 18px -8px rgb(0 0 0 / .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.mono-label { font-family: var(--f-inter), system-ui, sans-serif; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; }
+.hero-aurora { -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent); background: radial-gradient(55% 50% at 80% 25%, color-mix(in srgb, var(--primary) 42%, transparent), transparent 70%), radial-gradient(45% 45% at 5% 95%, color-mix(in srgb, var(--mark, var(--on-deep-muted)) 14%, transparent), transparent 70%); }
+.grid-lines { background-image: linear-gradient(color-mix(in srgb, var(--on-deep) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--on-deep) 5%, transparent) 1px, transparent 1px); background-size: 56px 56px; -webkit-mask-image: radial-gradient(75% 70% at 45% 40%, #000 25%, transparent 85%); mask-image: radial-gradient(75% 70% at 45% 40%, #000 25%, transparent 85%); }
+/* Cartão que brilha sob o ponteiro: a luz e a borda seguem o mouse (a posição vem de Spotlight) */
+[data-glow] { position: relative; isolation: isolate; }
+[data-glow]::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s; background: radial-gradient(340px circle at var(--mx, -999px) var(--my, -999px), color-mix(in srgb, var(--mark, var(--on-deep)) 20%, transparent), transparent 70%); }
+[data-glow]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s; padding: 1px; background: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), var(--mark, var(--on-deep)), transparent 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+@media (hover: hover) { [data-glow]:hover::before, [data-glow]:hover::after { opacity: 1; } }
+
+/* Faixa em movimento */
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); overflow: hidden; }
+.marquee-track { animation: marquee 46s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes caret { 50% { opacity: 0; } }
+@keyframes sweep { 0% { transform: translateX(-120%); } 100% { transform: translateX(220%); } }
+
+/* O peso do prumo cai no ponto marcado */
+.pin svg { transform-origin: 50% 100%; animation: drop .7s cubic-bezier(.2,.8,.2,1) both; }
+@utility glass { background-color: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: saturate(1.6) blur(16px); -webkit-backdrop-filter: saturate(1.6) blur(16px); }
+
+/* ---------- Animações ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes sheet { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pulse-ring { 0% { transform: scale(.6); opacity: .7; } 100% { transform: scale(2.4); opacity: 0; } }
+@keyframes swing { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+@keyframes dash { to { stroke-dashoffset: -40; } }
+@keyframes drop { 0% { transform: translateY(-120%); } 70% { transform: translateY(6%); } 100% { transform: none; } }
+.anim-rise { animation: rise .5s cubic-bezier(.2,.8,.2,1) both; }
+.anim-sheet { animation: sheet .35s cubic-bezier(.2,.8,.2,1) both; }
+.anim-swing { transform-origin: 50% 0; animation: swing 2.2s ease-in-out infinite; }
+.pulse-ring { animation: pulse-ring 1.8s ease-out infinite; }
+.route-dash { stroke-dasharray: 8 12; animation: dash 1.4s linear infinite; }
+
+/* Mapa */
+.maplibregl-map { font-family: inherit; }
+.maplibregl-ctrl-attrib { font-size: 10px; }
+/* Marcador prumo. O MapLibre posiciona o elemento externo com transform, então as animações ficam nos filhos. */
+.prumo-mk { position: relative; width: 34px; height: 62px; }
+.prumo-mk__drop { display: block; animation: prumo-drop .55s cubic-bezier(.2,.8,.2,1) both; }
+.prumo-mk__bob { display: block; overflow: visible; transform-origin: 17px 62px; filter: drop-shadow(0 4px 5px rgb(0 0 0 / .35)); animation: pin-settle .9s .35s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pin-settle { 0% { transform: scale(1, 1); } 30% { transform: scale(1.08, .9); } 60% { transform: scale(.97, 1.04); } 100% { transform: none; } }
+.prumo-mk__ring { position: absolute; left: 50%; bottom: -5px; width: 28px; height: 10px; margin-left: -14px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 40%, transparent); box-shadow: 0 0 0 1.5px #fff; }
+/* Parada: o mesmo prumo, menor, para não competir com partida e destino. */
+.prumo-mk--stop { width: 26px; height: 47px; }
+.prumo-mk--stop .prumo-mk__bob { width: 26px; height: 47px; transform-origin: 13px 47px; }
+.prumo-mk--origin .prumo-mk__ring { background: color-mix(in srgb, var(--accent) 40%, transparent); }
+/* GPS: o prumo procura o ponto (balança de leve) e a base pulsa onde você está. */
+.prumo-mk--me .prumo-mk__ring::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--primary); animation: prumo-pulse 1.9s ease-out infinite; }
+@keyframes prumo-drop { from { transform: translateY(-34px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes prumo-settle { 0% { transform: rotate(10deg); } 22% { transform: rotate(-7deg); } 44% { transform: rotate(4deg); } 66% { transform: rotate(-2deg); } 84% { transform: rotate(.8deg); } 100% { transform: none; } }
+@keyframes prumo-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes prumo-pulse { from { transform: scale(.7); opacity: .9; } to { transform: scale(2.8); opacity: 0; } }
+/* Troca de página: a antiga sai subindo e esmaecendo; a nova entra de baixo. */
+::view-transition-old(.page-swap) { animation: page-out .22s ease-in both; }
+::view-transition-new(.page-swap) { animation: page-in .38s cubic-bezier(.2,.8,.2,1) .08s both; }
+@keyframes page-out { to { opacity: 0; transform: translateY(-14px); filter: blur(4px); } }
+@keyframes page-in { from { opacity: 0; transform: translateY(18px); filter: blur(4px); } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-old(.page-swap), ::view-transition-new(.page-swap) { animation: none; } }
+/* Cartão de tarifa: brilho sutil passando, como tela de painel */
+.tariff-card { background: linear-gradient(160deg, color-mix(in srgb, var(--on-deep) 7%, transparent), transparent 60%); }
+.tariff-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--mark) 12%, transparent) 50%, transparent 60%); background-size: 250% 100%; animation: map-shimmer 5s linear infinite; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .tariff-card::after { animation: none; } }
+/* Garagem: cada carro na sua faixa; ao passar o mouse, a faixa corre e o carro avança. */
+.garage-road { background-image: linear-gradient(90deg, color-mix(in srgb, var(--ink) 22%, transparent) 55%, transparent 0); background-size: 22px 3px; }
+.garage-car { transition: translate .7s cubic-bezier(.2,.8,.2,1); }
+.garage-lane:hover .garage-car { translate: 14px 0; }
+.garage-lane:hover .garage-road { animation: road-run .5s linear infinite; }
+@keyframes road-run { to { background-position: -22px 0; } }
+/* Recibo com borda serrilhada embaixo */
+.receipt { -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%; }
+/* Radar da segurança */
+.safety-sweep { background: conic-gradient(from 0deg, color-mix(in srgb, var(--mark) 26%, transparent), transparent 22%); animation: radar 4.5s linear infinite; }
+.safety-ping { animation: prumo-pulse 2.6s ease-out infinite; }
+@keyframes radar { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .garage-car, .safety-sweep, .safety-ping { animation: none; transition: none; } .garage-lane:hover .garage-road { animation: none; } }
+/* Linha do Vale: o prumo balança sobre a estação; o fundo tem uma trama de pontos, como papel de mapa. */
+.valley-bob svg { transform-origin: 50% 0; animation: prumo-sway 2.4s ease-in-out infinite; }
+.valley-grain { background-image: radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.2px); background-size: 22px 22px; -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent); }
+@media (prefers-reduced-motion: reduce) { .valley-bob svg { animation: none; } }
+/* Etiquetas flutuando ao redor da viagem compartilhada */
+@keyframes safety-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.safety-float { animation: safety-float 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .safety-float { animation: none; } }
+/* Panorama do Vale do Aço */
+.valley-fade { -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent), linear-gradient(180deg, #000 82%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent), linear-gradient(180deg, #000 82%, transparent); mask-composite: intersect; }
+@keyframes inox-glint { 0%, 70% { transform: skewX(-22deg) translateX(0); } 100% { transform: skewX(-22deg) translateX(420px); } }
+.inox-glint { animation: inox-glint 6s ease-in-out infinite; }
+@keyframes steam { 0% { transform: translate(0, 0) scale(.5); opacity: 0; } 15% { opacity: .9; } 100% { transform: translate(14px, -70px) scale(2.2); opacity: 0; } }
+.steam { transform-box: fill-box; transform-origin: center; animation: steam 6.6s ease-out infinite; opacity: 0; }
+@keyframes melt { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
+.melt-glow { animation: melt 3.2s ease-in-out infinite; }
+@keyframes river-flow { to { stroke-dashoffset: -88; } }
+.river-flow { animation: river-flow 4s linear infinite; }
+@keyframes window-blink { 0%, 92%, 100% { opacity: 1; } 96% { opacity: .35; } }
+.valley-window { animation: window-blink 9s steps(1) infinite; }
+@media (prefers-reduced-motion: reduce) { .inox-glint, .steam, .melt-glow, .river-flow, .valley-window { animation: none; } .steam { opacity: .5; } }
+/* Faixa de compromissos em forma de estrada */
+.road-band { background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--on-deep) 22%, transparent) 0 18px, transparent 18px 36px) top / 100% 2px no-repeat, repeating-linear-gradient(90deg, color-mix(in srgb, var(--on-deep) 22%, transparent) 0 18px, transparent 18px 36px) bottom / 100% 2px no-repeat; }
+/*
+ * Celular: campos com letra de pelo menos 16 px (no iPhone, menos que isso faz a tela dar zoom ao tocar),
+ * sem o atraso de toque duplo e sem o destaque cinza do toque no Android.
+ */
+input[type="checkbox"], input[type="radio"] { flex-shrink: 0; }
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: max(1em, 16px); }
+  a, button, [role="button"], label, summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+}
+/* Mapa carregando: a cor do mapa com um brilho passando, em vez de um bloco vazio. */
+.map-loading { background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / .55) 50%, transparent 65%) #ece8e1; background-size: 250% 100%; animation: map-shimmer 1.4s linear infinite; }
+@keyframes map-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+@media (prefers-reduced-motion: reduce) { .map-loading { animation: none; } }
+/* Prévia de uma sugestão da busca: prumo translúcido com o nome do lugar num balão. */
+.prumo-mk--preview .prumo-mk__bob { opacity: .85; }
+.prumo-mk--preview .prumo-mk__ring::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--accent); animation: prumo-pulse 1.6s ease-out infinite; }
+.map-tag { position: relative; display: flex; flex-direction: column; gap: 1px; max-width: 240px; padding: 7px 12px 8px; border-radius: 14px; background: var(--deep); color: var(--on-deep); font-size: 13px; line-height: 1.2; box-shadow: 0 10px 24px -10px rgb(0 0 0 / .55); white-space: nowrap; animation: map-tag-in .35s cubic-bezier(.2,.8,.2,1) both; pointer-events: none; }
+.map-tag b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+.map-tag small { font-size: 11px; opacity: .72; overflow: hidden; text-overflow: ellipsis; }
+.map-tag::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; margin-left: -5px; background: inherit; transform: rotate(45deg); border-radius: 2px; }
+/* Etiquetas presas na partida e no destino (computador). O MapLibre posiciona o host; a animação fica no filho. */
+.end-tag-host { pointer-events: none; }
+.end-tag { display: flex; align-items: stretch; max-width: 220px; overflow: hidden; border-radius: 12px; background: #fff; color: #17252b; box-shadow: 0 10px 28px -12px rgb(0 0 0 / .45), 0 0 0 1px rgb(0 0 0 / .06); font-size: 13px; line-height: 1.2; animation: map-tag-in .4s .3s cubic-bezier(.2,.8,.2,1) both; }
+.end-tag__badge { display: grid; place-items: center; align-content: center; min-width: 44px; padding: 6px 8px; background: var(--deep); color: var(--on-deep); font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
+.end-tag__badge small { font-size: 10px; font-weight: 600; opacity: .8; }
+.end-tag__text { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding: 7px 12px; }
+.end-tag__text b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.end-tag__text small { font-size: 11px; color: #56636a; }
+.end-tag--dest .end-tag__text b::after { content: " ›"; color: var(--primary); }
+@media (prefers-reduced-motion: reduce) { .end-tag { animation: none; } }
+/* Tempo de viagem sobre a rota */
+/* O MapLibre posiciona o elemento externo com transform: animações só nos filhos. */
+.map-eta > span { display: inline-flex; align-items: baseline; gap: 4px; padding: 6px 11px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-weight: 700; font-size: 13px; box-shadow: 0 8px 20px -8px rgb(0 0 0 / .5), 0 0 0 3px #fff; animation: map-tag-in .4s .5s cubic-bezier(.2,.8,.2,1) both; pointer-events: none; font-variant-numeric: tabular-nums; }
+.map-eta > span small { font-weight: 600; font-size: 11px; opacity: .85; }
+@keyframes map-tag-in { from { transform: translateY(6px) scale(.92); opacity: 0; } to { transform: none; opacity: 1; } }
+/* Carros online por perto, vistos de cima */
+.ambient-car { width: 30px; height: 30px; display: grid; place-items: center; }
+.ambient-car > span { display: grid; place-items: center; animation: map-tag-in .5s ease-out both; }
+.ambient-car svg { filter: drop-shadow(0 3px 3px rgb(0 0 0 / .35)); }
+/* Painel flutuante sobre o mapa (computador) */
+@media (min-width: 768px) {
+  .float-panel { background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 30px 80px -30px rgb(0 0 0 / .55), 0 0 0 1px var(--line); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-tag, .map-eta > span, .ambient-car > span, .prumo-mk--preview .prumo-mk__bob, .prumo-mk--preview .prumo-mk__ring::after { animation: none; }
+}
+/* Carro do motorista ao vivo (posição do GPS do celular dele) */
+.live-car { position: relative; width: 44px; height: 44px; display: grid; place-items: center; }
+.live-car__pulse { position: absolute; inset: 4px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 22%, transparent); animation: prumo-pulse 2s ease-out infinite; }
+.live-car__body { display: grid; place-items: center; transition: transform .8s cubic-bezier(.2,.8,.2,1); filter: drop-shadow(0 4px 5px rgb(0 0 0 / .35)); }
+@media (prefers-reduced-motion: reduce) { .live-car__pulse { animation: none; } }
+.car-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 28%, transparent), 0 4px 10px rgb(0 0 0 / .35); border: 3px solid #fff; transition: transform .8s linear; }
+
+.tilt { transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; transform-style: preserve-3d; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
