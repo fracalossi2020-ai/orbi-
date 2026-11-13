@@ -2,7 +2,7 @@
 import { MapView } from "@/components/LazyMap";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Icon } from "@/components/Icon";
 import { PlaceSearch, type Place } from "@/components/PlaceSearch";
 import { PlacePreview } from "@/components/PlacePreview";
@@ -10,6 +10,7 @@ import type { MapPoint } from "@/components/MapView";
 import { api, ErrorNote, km, mins } from "@/components/ui";
 import { brl, quoteFare } from "@/domain/pricing";
 import { cityOf, pulseText, usePulse, useTariffs } from "./usePublic";
+import { OrbitField } from "./OrbitField";
 
 export type HeroCity = { id: string; name: string; state: string; lat: number; lng: number; radiusKm: number; slug?: string };
 type Trip = { distanceM: number; durationS: number; geometry: [number, number][]; source: "osrm" | "estimate"; originInArea: boolean; destInArea: boolean };
@@ -21,57 +22,17 @@ const EASE = [.2, .8, .2, 1] as const;
 export const DEST_EVENT = "prumo:destino";
 
 /**
- * Arte do topo, tirada do manual da marca: o arco azul que atravessa a capa, com brilho,
- * e duas órbitas finas com um ponto de luz percorrendo a maior. Segue o mouse de leve (parallax).
+ * Arte do topo: a constelação do Vale do Aço (ver OrbitField). Cidades são sistemas orbitais,
+ * carros são cometas e cada corrida pedida atrai o carro mais próximo.
  */
-function OrbitArt({ dim, reduce }: { dim: boolean; reduce: boolean }) {
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 50, damping: 18 });
-  const sy = useSpring(my, { stiffness: 50, damping: 18 });
-  const arcX = useTransform(sx, (v) => v * 26);
-  const arcY = useTransform(sy, (v) => v * 18);
-  const ringX = useTransform(sx, (v) => v * -12);
-  const ringY = useTransform(sy, (v) => v * -8);
-  useEffect(() => {
-    if (reduce || !matchMedia("(pointer: fine)").matches) return;
-    const on = (e: PointerEvent) => { mx.set(e.clientX / innerWidth - .5); my.set(e.clientY / innerHeight - .5); };
-    addEventListener("pointermove", on);
-    return () => removeEventListener("pointermove", on);
-  }, [reduce, mx, my]);
-
-  const orbit = "M540 470a520 180 0 1 0 1040 0a520 180 0 1 0 -1040 0";
+function OrbitArt({ dim, reduce, labels }: { dim: boolean; reduce: boolean; labels: string[] }) {
   return (
     <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0" initial={false}
       animate={{ opacity: dim ? .28 : 1, scale: dim ? 1.04 : 1 }} transition={{ duration: reduce ? 0 : 1, ease: EASE }}>
-      {/* Profundidade: um brilho azul-noturno atrás do texto */}
+      {/* Profundidade: um brilho azul-noturno atrás do texto, e a grade de pontos da marca */}
       <div className="absolute inset-0" style={{ background: "radial-gradient(60% 70% at 18% 40%, rgb(10 30 61 / .9), transparent 70%)" }} />
-      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full">
-        <defs>
-          <linearGradient id="hero-arc" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0" stopColor="#0A3BFF" />
-            <stop offset=".55" stopColor="#0B6BFF" />
-            <stop offset="1" stopColor="#00E1FF" />
-          </linearGradient>
-          <filter id="hero-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="70" /></filter>
-        </defs>
-        <motion.g style={{ x: ringX, y: ringY }}>
-          <g transform="rotate(-16 1060 470)" fill="none" stroke="rgb(245 247 250 / .08)">
-            <ellipse cx="1060" cy="470" rx="520" ry="180" />
-            <ellipse cx="1060" cy="470" rx="340" ry="112" stroke="rgb(245 247 250 / .05)" />
-            {!reduce && (
-              <g>
-                <circle r="16" fill="#00E1FF" opacity=".18"><animateMotion dur="16s" repeatCount="indefinite" path={orbit} /></circle>
-                <circle r="4.5" fill="#BDF6FF"><animateMotion dur="16s" repeatCount="indefinite" path={orbit} /></circle>
-              </g>
-            )}
-          </g>
-        </motion.g>
-        <motion.g style={{ x: arcX, y: arcY }} initial={reduce ? false : { opacity: 0, x: -80, y: 120 }} animate={{ opacity: 1, x: 0, y: 0 }} transition={{ duration: 1.6, delay: .2, ease: EASE }}>
-          <path d="M600 930C800 650 1060 430 1480 300L1480 480C1170 540 960 720 850 930Z" fill="url(#hero-arc)" filter="url(#hero-blur)" opacity=".55" />
-          <path d="M600 930C800 650 1060 430 1480 300L1480 480C1170 540 960 720 850 930Z" fill="url(#hero-arc)" />
-        </motion.g>
-      </svg>
+      <div className="orbit-grid absolute inset-0 opacity-70" />
+      <OrbitField labels={labels} reduce={reduce} />
       {/* Fusão com a faixa de baixo */}
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-deep to-transparent" />
     </motion.div>
@@ -215,7 +176,7 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
 
   return (
     <section className="on-deep relative isolate overflow-hidden bg-deep text-on-deep">
-      <OrbitArt dim={traveling} reduce={reduce} />
+      <OrbitArt dim={traveling} reduce={reduce} labels={cities.map((c) => c.name)} />
 
       <div className={`relative z-10 mx-auto grid w-full max-w-[1280px] gap-8 px-5 pt-24 pb-14 md:px-10 lg:min-h-[100svh] lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-12 lg:pt-28 lg:pb-16 ${traveling ? "lg:items-start" : "lg:items-center"}`}>
         <motion.div layout={!reduce} transition={{ layout: { duration: .8, ease: EASE } }} className="w-full">

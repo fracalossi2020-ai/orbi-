@@ -77,13 +77,11 @@ export function SiteFooter({ cities = [] }: { cities?: { slug: string; name: str
         <FooterCol title="Plataforma" links={[["Como funciona", "/como-funciona"], ["Passageiros", "/passageiros"], ["Motoristas", "/motoristas"], ["Requisitos para dirigir", "/motoristas/requisitos"], ["Clube Orbi", "/clube"]]} />
         {cities.length > 0 && <FooterCol title="Cidades" links={cities.map((c) => [c.name, `/cidades/${c.slug}`] as [string, string])} />}
         <FooterCol title="Empresa" links={[["A empresa", "/empresa"], ["Central de ajuda", "/ajuda"], ["Seja um parceiro", "/parceiros"], ["Tenho interesse", "/interesse"], ["Contato", "/contato"]]} />
-        <FooterCol title="Transparência" links={[["Privacidade", "/privacidade"], ["Termos de uso", "/termos"], ["Termo do motorista", "/termos-motorista"], ["O que já funciona", "/status"]]} />
+        <FooterCol title="Transparência" links={[["Privacidade", "/privacidade"], ["Termos de uso", "/termos"], ["Termo do motorista", "/termos-motorista"], ["O que já funciona", "/status"], ["Créditos", "/creditos"]]} />
       </div>
       <p aria-hidden="true" className="display pointer-events-none mx-auto max-w-[1280px] overflow-hidden px-5 text-center text-[clamp(5rem,26vw,22rem)] leading-[.78] tracking-tight select-none md:px-10"><span className="relative inline-block" style={{ letterSpacing: "-0.06em", backgroundImage: "linear-gradient(180deg, color-mix(in srgb, var(--on-deep) 26%, transparent), transparent 85%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>orbı
         <OrbiAccent className="absolute text-[color-mix(in_srgb,#1166FF_70%,transparent)]" style={{ width: ".36em", right: "-.06em", top: "-.02em" }} /></span></p>
-      <div className="mx-auto max-w-[1280px] px-5 pb-8 text-xs text-on-deep-muted md:px-10">
-        Modelo 3D: “Car Concept”, de Eric Chadwick / Darmstadt Graphics Group, CC BY 4.0, modificado pela Orbi (cores, marcas removidas, compressão). Mapas © colaboradores do OpenStreetMap.
-      </div>
+      <div className="pb-8" />
     </footer>
   );
 }
