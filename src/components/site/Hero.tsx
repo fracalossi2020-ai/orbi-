@@ -11,6 +11,7 @@ import { api, ErrorNote, km, mins } from "@/components/ui";
 import { brl, quoteFare } from "@/domain/pricing";
 import { cityOf, pulseText, usePulse, useTariffs } from "./usePublic";
 import { OrbitField } from "./OrbitField";
+import { asset, STATIC } from "@/lib/site-mode";
 
 export type HeroCity = { id: string; name: string; state: string; lat: number; lng: number; radiusKm: number; slug?: string };
 type Trip = { distanceM: number; durationS: number; geometry: [number, number][]; source: "osrm" | "estimate"; originInArea: boolean; destInArea: boolean };
@@ -135,7 +136,7 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
     if (!dest) { setError("Escolha o local de chegada na lista de endereços."); return; }
     setError(null);
     try { sessionStorage.setItem("prumo-trip", JSON.stringify({ origin, dest })); } catch { /* armazenamento bloqueado: a pessoa digita de novo */ }
-    window.location.href = passenger ? "/passageiro" : "/entrar?perfil=passageiro";
+    window.location.href = STATIC ? asset("/entrar/") : passenger ? "/passageiro" : "/entrar?perfil=passageiro";
   };
 
   const panel = (

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import type { CityPulse, PublicCity } from "@/server/public-data";
 import { findRegion } from "@/domain/geo";
+import { STATIC } from "@/lib/site-mode";
 
 export type { CityPulse, PublicCity };
 
@@ -10,7 +11,9 @@ const cache = new Map<string, Promise<unknown>>();
 function load<T>(what: string, ttlMs = 0): Promise<T> {
   const key = what;
   if (!cache.has(key)) {
-    const p = fetch(`/api/public/${what}`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))));
+    const p = STATIC
+      ? import("@/lib/static-api").then((m) => m.staticApi(`/api/public/${what}`))
+      : fetch(`/api/public/${what}`).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))));
     p.catch(() => cache.delete(key));
     cache.set(key, p);
     if (ttlMs) setTimeout(() => cache.delete(key), ttlMs);

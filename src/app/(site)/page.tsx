@@ -9,8 +9,10 @@ import { getDb, schema as s } from "@/db";
 import { getSetting } from "@/db/seed";
 import { identityById } from "@/lib/identities";
 import { currentUser } from "@/server/auth";
+import { STATIC } from "@/lib/site-mode";
 
 async function identity() {
+  if (STATIC) return "a";
   const preview = (await cookies()).get("prumo_identity_preview")?.value;
   if (preview && ["a", "b", "c", "d"].includes(preview)) return preview;
   try { return await getSetting(await getDb(), "identity", "a"); } catch { return "a"; }

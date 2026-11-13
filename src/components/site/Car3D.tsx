@@ -7,8 +7,9 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import type { Identity } from "@/lib/identities";
 import { applyLivery } from "./car-livery";
+import { asset } from "@/lib/site-mode";
 
-const MODEL = "/models/prumo-car.glb";
+const MODEL = asset("/models/prumo-car.glb");
 const WHEELS = ["WheelFrontL", "WheelFrontR", "WheelRearL", "WheelRearR"];
 
 type SceneProps = {

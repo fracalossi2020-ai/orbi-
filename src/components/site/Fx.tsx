@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Icon } from "@/components/Icon";
+import Link from "next/link";
 
 /**
  * Um único ouvinte de ponteiro para todo o site: grava a posição do mouse em cada elemento
@@ -53,7 +54,7 @@ export function CookieNotice() {
   const ok = () => { setShow(false); try { localStorage.setItem("prumo-cookies-ok", "1"); } catch { /* sem armazenamento */ } };
   return (
     <div role="region" aria-label="Aviso de cookies" className="anim-rise fixed inset-x-3 bottom-3 z-[55] mx-auto flex max-w-xl flex-wrap items-center gap-3 rounded-[20px] bg-deep p-4 text-sm text-on-deep shadow-[0_24px_60px_-20px_rgb(0_0_0/.7)] sm:bottom-5 sm:flex-nowrap">
-      <p className="flex-1">Usamos só cookies necessários: para manter você conectado e lembrar o tema. Sem anúncios e sem rastreamento. <a href="/privacidade" className="font-semibold underline underline-offset-2">Privacidade</a></p>
+      <p className="flex-1">Usamos só cookies necessários: para manter você conectado e lembrar o tema. Sem anúncios e sem rastreamento. <Link href="/privacidade" className="font-semibold underline underline-offset-2">Privacidade</Link></p>
       <button type="button" onClick={ok} className="btn btn-sm btn-on-deep shrink-0">Entendi</button>
     </div>
   );

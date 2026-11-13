@@ -3,7 +3,7 @@ import type { Place } from "@/domain/place";
 
 const OSRM = () => process.env.OSRM_URL || "https://router.project-osrm.org";
 const PHOTON = () => process.env.PHOTON_URL || "https://photon.komoot.io";
-const UA = { "User-Agent": "Orbi/0.1 (plataforma de mobilidade)" };
+const UA: Record<string, string> = typeof window === "undefined" ? { "User-Agent": "Orbi/0.1 (plataforma de mobilidade)" } : {};
 
 export type Route = { distanceM: number; durationS: number; geometry: [number, number][]; source: "osrm" | "estimate" };
 

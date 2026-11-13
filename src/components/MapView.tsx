@@ -4,6 +4,7 @@ import type { Map as MLMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { hangingBobSvg } from "@/lib/prumo-mark";
 import { MAP_WORKER_URL, mapAssets } from "@/lib/map-preload";
+import { api } from "@/components/ui";
 
 /** heading: direção do movimento em graus (do GPS do celular), usada para girar o carro. */
 export type MapPoint = { id: string; lat: number; lng: number; kind: "origin" | "dest" | "stop" | "car" | "me"; heading?: number | null };
@@ -373,7 +374,7 @@ export function MapView({ points = [], route, onPick, className = "", ariaLabel 
     else {
       // Espera um instante: passar rápido pela lista não dispara uma busca por item.
       const t = setTimeout(() => {
-        fetch(`/api/geo/outline?osm=${osm}`).then((r) => r.ok ? r.json() : { shape: null }).then((r: { shape: unknown }) => { outlineCache.set(osm, r.shape); draw(r.shape); }).catch(() => {});
+        api<{ shape: unknown }>(`/api/geo/outline?osm=${osm}`).then((r: { shape: unknown }) => { outlineCache.set(osm, r.shape); draw(r.shape); }).catch(() => {});
       }, 250);
       return () => { live = false; clearTimeout(t); };
     }

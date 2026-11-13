@@ -8,6 +8,7 @@ import { cookies, headers } from "next/headers";
 import { dataDir, getDb, schema as s } from "@/db";
 import { STAFF } from "@/domain/permissions";
 import { decrypt, encrypt, rateLimit } from "./security";
+import { STATIC } from "@/lib/site-mode";
 
 const scrypt = promisify(scryptCb) as (p: string, salt: Buffer, len: number) => Promise<Buffer>;
 export const COOKIE = "prumo_session";
@@ -119,6 +120,8 @@ export const mfaPending = (r: { user: SessionUser; session: SessionRow }) => !!r
  * Conta suspensa perde o acesso na hora, porque a sessão é conferida no banco a cada pedido.
  */
 export async function currentUser(): Promise<SessionUser | null> {
+  // Versão vitrine (páginas prontas, sem servidor): ninguém entra.
+  if (STATIC) return null;
   const r = await readSession();
   return r && !mfaPending(r) ? r.user : null;
 }

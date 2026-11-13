@@ -4,6 +4,7 @@ import { preconnect } from "react-dom";
 import { Geist_Mono, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { parseTheme, THEME_COOKIE } from "@/lib/theme";
+import { asset, STATIC } from "@/lib/site-mode";
 
 // Inter é a fonte do manual da marca (Regular, Medium, Semibold e Bold). A mono fica só para números de painel.
 const inter = Inter({ display: "swap", subsets: ["latin"], variable: "--f-inter", preload: true });
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   title: { default: "Orbi — Sua direção, nosso compromisso.", template: "%s · Orbi" },
   description: "Uma nova forma de fazer mobilidade. Mais respeito para quem dirige. Mais confiança para quem chega.",
-  icons: { icon: "/icon.svg", apple: "/app-icon/180" },
+  icons: { icon: asset("/icon.svg"), ...(STATIC ? {} : { apple: "/app-icon/180" }) },
   openGraph: { type: "website", locale: "pt_BR", siteName: "Orbi" },
   // iPhone: aberto pela tela de início, vira app em tela cheia (sem a barra do Safari).
   appleWebApp: { capable: true, title: "Orbi", statusBarStyle: "default" },
@@ -27,7 +28,8 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, view
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // A identidade da Orbi está definida (manual da marca): as propostas antigas não se aplicam mais.
   const identity = "a";
-  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
+  // Versão vitrine (páginas prontas): sem cookies; o tema segue o do aparelho.
+  const theme = STATIC ? parseTheme(undefined) : parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   const fonts = [inter, interTight, mono].map((f) => f.variable).join(" ");
   // Abre a conexão com o servidor de mapas já no carregamento da página, antes de o mapa pedir algo.
   preconnect("https://tiles.openfreemap.org", { crossOrigin: "anonymous" });

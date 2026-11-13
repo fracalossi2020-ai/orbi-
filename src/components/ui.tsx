@@ -2,10 +2,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { isDarkNow, saveTheme } from "@/lib/theme";
+import { STATIC } from "@/lib/site-mode";
 
 // ------------------------------------------------------------------ dados
 
 export async function api<T = any>(url: string, init?: { method?: string; body?: unknown }): Promise<T> { // eslint-disable-line
+  // Versão vitrine: sem servidor, a resposta é montada no navegador.
+  if (STATIC) return (await import("@/lib/static-api")).staticApi(url) as Promise<T>;
   const res = await fetch(url, {
     method: init?.method ?? (init?.body !== undefined ? "POST" : "GET"),
     headers: init?.body !== undefined ? { "Content-Type": "application/json" } : undefined,

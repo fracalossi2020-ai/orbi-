@@ -26,8 +26,11 @@ async function connect(): Promise<Db> {
     const [{ PGlite }, { drizzle }, { migrate }] = await Promise.all([
       import("@electric-sql/pglite"), import("drizzle-orm/pglite"), import("drizzle-orm/pglite/migrator"),
     ]);
-    fs.mkdirSync(dataDir(), { recursive: true });
-    const client = new PGlite(path.join(dataDir(), "pg"));
+    // PRUMO_DB_MEMORY: banco só na memória, criado do zero com a configuração base. Usado no build da versão vitrine,
+    // em que vários processos montam páginas ao mesmo tempo e o banco em pasta aceita um só.
+    const memory = process.env.PRUMO_DB_MEMORY === "1";
+    if (!memory) fs.mkdirSync(dataDir(), { recursive: true });
+    const client = memory ? new PGlite() : new PGlite(path.join(dataDir(), "pg"));
     const pdb = drizzle(client, { schema });
     await migrate(pdb, { migrationsFolder });
     db = pdb as unknown as Db;

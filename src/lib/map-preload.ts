@@ -5,8 +5,10 @@
  * O estilo vem do próprio servidor da Orbi (/api/map-style), já com o índice dos blocos dentro.
  */
 export const MAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
-export const MAP_WORKER_URL = "/maplibre/maplibre-gl-worker.mjs";
+export const MAP_WORKER_URL = asset("/maplibre/maplibre-gl-worker.mjs");
 const LOCAL_STYLE_URL = "/api/map-style";
+
+import { asset, STATIC } from "./site-mode";
 
 type StyleJson = { sources: Record<string, unknown>; sprite?: string | { id: string; url: string }[]; glyphs?: string; layers: { layout?: Record<string, unknown> }[] };
 
@@ -17,6 +19,8 @@ let style: Promise<StyleJson | string> | null = null;
 const warm = (url: string) => { fetch(url, { mode: "cors", credentials: "omit" }).catch(() => {}); };
 
 async function loadStyle(): Promise<StyleJson | string> {
+  // Versão vitrine: sem servidor próprio, a biblioteca busca o estilo direto no servidor de mapas.
+  if (STATIC) return MAP_STYLE_URL;
   try {
     const res = await fetch(LOCAL_STYLE_URL);
     if (!res.ok) throw new Error(`estilo ${res.status}`);

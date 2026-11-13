@@ -22,6 +22,7 @@ npm run admin:create -- "Name" email@x.com admin   # prints the password once
 npm run db:generate         # drizzle-kit migration from src/db/schema.ts
 npm run celular             # Cloudflare tunnel + QR code to test on a phone (real https, so GPS works)
 npm run model:build         # regenerate the compressed 3D car (scripts/build-car-model.ts)
+node scripts/build-pages.mjs orbi   # static showcase for GitHub Pages into out/ (base path /orbi)
 ```
 
 ## Running gotchas
@@ -30,6 +31,7 @@ npm run model:build         # regenerate the compressed 3D car (scripts/build-ca
 - **`next start` refuses the embedded DB.** Without `DATABASE_URL`, production mode throws and the public APIs (`/api/public/*`) return 500, which silently empties city lists and pulse. To run production mode locally: `PRUMO_ALLOW_EMBEDDED_DB=true AUTH_SECRET="$(cat .data/secret)" npx next start -p 3000`. A 200 on `/` proves nothing; check `/api/public/pulse` too.
 - **E2E uses port 3100** and `.data-e2e/` (wiped each run, started by `scripts/e2e-server.ts` with a fake OIDC server). It never touches `.data/`. `workers: 1`; tests share state.
 - Port 3000 may already be taken by an unrelated local program (a Remotion Studio showed up once). Check what answers before assuming it is Orbi.
+- **GitHub Pages showcase** (`.github/workflows/pages.yml`, runs on every push to main): `NEXT_PUBLIC_STATIC=1` + `output: "export"`. `scripts/build-pages.mjs` moves the apps, admin, API, `(auth)` and `proxy.ts` aside (restored afterwards locally, deleted in CI), writes "app em breve" pages for `/entrar` and `/cadastro`, and builds with an in-memory seeded DB (`PRUMO_DB_MEMORY=1`). In the browser, `api()`/`usePublic` answer from `src/lib/static-api.ts` (Photon/OSRM/Nominatim called directly, tariffs from `/data/tariffs.json`). Raw URLs (fetch, `window.location`, public assets) must go through `asset()` from `src/lib/site-mode.ts` to get the base path; `<Link>` gets it automatically. The build still writes `.next`: stop the local server first and run a normal `next build` afterwards.
 - `.data/` (DB, uploads, `secret`) and `.env*` are gitignored; keep it that way.
 
 ## Architecture

@@ -11,3 +11,8 @@ playwright-report
 
 # programas baixados para teste no celular
 .tools/
+
+# versão vitrine (GitHub Pages)
+out/
+out-pages/
+.pages-stash/

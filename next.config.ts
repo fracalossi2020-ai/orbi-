@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 // HSTS só com HTTPS de verdade: o navegador passa a recusar a versão sem cadeado do site.
 const https = (process.env.APP_URL ?? "").startsWith("https://");
 const prod = process.env.NODE_ENV === "production";
+// Versão vitrine (GitHub Pages): páginas prontas, sem servidor. Montada por scripts/build-pages.mjs.
+const staticSite = process.env.NEXT_PUBLIC_STATIC === "1";
 
 const config: NextConfig = {
   // Teste no celular pelo túnel da Cloudflare (npm run celular). Não liste IPs da rede local aqui:
@@ -12,7 +14,20 @@ const config: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ["@electric-sql/pglite", "pg"],
   transpilePackages: ["three"],
-  async headers() {
+  ...(staticSite ? {
+    output: "export" as const,
+    basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,
+    trailingSlash: true,
+    images: { unoptimized: true },
+    // Os tipos já são checados no npm run typecheck; aqui a checagem tropeçaria nos tipos gerados dos apps tirados do build.
+    typescript: { ignoreBuildErrors: true },
+  } : {}),
+  // Páginas prontas não têm servidor para mandar cabeçalhos; o GitHub Pages usa os dele.
+  ...(staticSite ? {} : { headers }),
+};
+export default config;
+
+async function headers() {
     return [
       {
         source: "/:path*",
@@ -37,6 +52,4 @@ const config: NextConfig = {
       { source: "/api/:path*", headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; frame-ancestors 'none'" }] },
       { source: "/models/:file*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] },
     ];
-  },
-};
-export default config;
+}

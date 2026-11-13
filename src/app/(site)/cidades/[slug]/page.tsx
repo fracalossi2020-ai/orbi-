@@ -11,12 +11,19 @@ import { Icon } from "@/components/Icon";
 import { brl } from "@/domain/pricing";
 import { currentUser } from "@/server/auth";
 import { publicTariffs } from "@/server/public-data";
+import { STATIC } from "@/lib/site-mode";
 
 async function cityBySlug(slug: string) {
   try {
     const [r] = await (await getDb()).select().from(s.regions).where(and(eq(s.regions.slug, slug), eq(s.regions.active, true)));
     return r ?? null;
   } catch { return null; }
+}
+
+/** Versão vitrine (páginas prontas): uma página por cidade ativa, gerada no build. No servidor normal, nada muda. */
+export async function generateStaticParams() {
+  if (!STATIC) return [];
+  return (await publicTariffs()).map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
