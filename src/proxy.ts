@@ -20,7 +20,8 @@ export function proxy(req: NextRequest) {
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: blob: ${MAP_HOST}`,
     "font-src 'self' data:",
-    `connect-src 'self' ${MAP_HOST}${dev ? " ws: wss:" : ""}`,
+    // blob:: o carregador do carro 3D lê as texturas embutidas no modelo por endereços blob criados pela própria página.
+    `connect-src 'self' blob: ${MAP_HOST}${dev ? " ws: wss:" : ""}`,
     "worker-src 'self' blob:",
     "manifest-src 'self'",
     "media-src 'self'",

@@ -4,7 +4,6 @@ import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import type { Identity } from "@/lib/identities";
 import { applyLivery } from "./car-livery";
@@ -16,15 +15,9 @@ type SceneProps = {
   colors: Identity["car"]; yaw: React.RefObject<number>; reduced: boolean; mobile: boolean; centered: boolean; onReady: () => void;
 };
 
-let ktx2: KTX2Loader | null = null;
-
 function useCar(colors: Identity["car"]) {
-  const gl = useThree((s) => s.gl);
-  const gltf = useLoader(GLTFLoader, MODEL, (loader) => {
-    ktx2 ??= new KTX2Loader().setTranscoderPath("/basis/").detectSupport(gl);
-    loader.setKTX2Loader(ktx2);
-    loader.setMeshoptDecoder(MeshoptDecoder);
-  });
+  // Texturas em WebP (ver scripts/car-textures.ts): sem decodificador KTX2, que a política de segurança bloqueia.
+  const gltf = useLoader(GLTFLoader, MODEL, (loader) => { loader.setMeshoptDecoder(MeshoptDecoder); });
 
   return useMemo(() => {
     const root = gltf.scene;

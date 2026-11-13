@@ -5,6 +5,7 @@
  *  - remove marcas de terceiros: a licença do modelo exclui logos, então saem placa, emblema
  *    do volante e todas as texturas emissivas/base onde os logos da Khronos ficam;
  *  - remove variantes de material (a cor vem da identidade em tempo de execução);
+ *  - converte as texturas KTX2 para WebP (ver car-textures.ts);
  *  - comprime a geometria com meshopt, sem simplificar: simplificar rasga as emendas da lataria.
  *
  * Uso: npm run model:build -- <caminho do CarConcept.glb>
@@ -13,6 +14,7 @@ import { NodeIO } from "@gltf-transform/core";
 import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import { dedup, prune, meshopt, quantize } from "@gltf-transform/functions";
 import { MeshoptEncoder } from "meshoptimizer";
+import { ktx2ToWebp } from "./car-textures";
 
 const input = process.argv[2];
 const output = "public/models/prumo-car.glb";
@@ -40,6 +42,7 @@ async function main() {
     }
     if (/Pearl|Graphite/.test(mat.getName()) || mat.getName() === "License") mat.dispose();
   }
+  await ktx2ToWebp(doc);
   await doc.transform(
     dedup(),
     prune({ keepAttributes: true, keepLeaves: true }),
