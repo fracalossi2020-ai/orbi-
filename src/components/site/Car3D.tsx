@@ -61,7 +61,10 @@ function useCar(colors: Identity["car"]) {
   }, [gltf, colors]);
 }
 
-/** Pavimento com faixas em movimento. Sombreador próprio: um único quadrilátero, custo mínimo. */
+/**
+ * Avenida sem fim: asfalto, faixas, meio-fio iluminado, calçadas e faixas de pedestres correndo para trás.
+ * Some com a distância da câmera, então a rua vai até o horizonte. Sombreador próprio: um único quadrilátero.
+ */
 function Road({ color, reduced, reflective }: { color: string; reduced: boolean; reflective: boolean }) {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const uniforms = useMemo(() => ({
@@ -70,7 +73,7 @@ function Road({ color, reduced, reflective }: { color: string; reduced: boolean;
   useFrame((_, dt) => { if (mat.current && !reduced) mat.current.uniforms.uTime.value += dt; });
   return (
     <mesh rotation-x={-Math.PI / 2} position-y={0} renderOrder={1}>
-      <planeGeometry args={[220, 220]} />
+      <planeGeometry args={[80, 400]} />
       <shaderMaterial ref={mat} transparent depthWrite={false} uniforms={uniforms}
         vertexShader={`varying vec2 vUv; varying vec3 vW; void main(){ vUv=uv; vW=(modelMatrix*vec4(position,1.)).xyz; gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.); }`}
         fragmentShader={`
@@ -78,19 +81,24 @@ function Road({ color, reduced, reflective }: { color: string; reduced: boolean;
           float box(float v,float a,float b,float s){ return smoothstep(a-s,a,v)-smoothstep(b,b+s,v); }
           void main(){
             float z=vW.z+uTime*16.;
-            vec3 asphalt=vec3(.012,.016,.019);
+            float ax=abs(vW.x);
             float grain=fract(sin(dot(floor(vW.xz*90.),vec2(12.9,78.2)))*43758.5);
-            vec3 col=asphalt+grain*.006;
-            float d0=length(vW.xz);
-            float dash=box(mod(z,7.),0.,3.2,.03)*box(abs(vW.x-3.6),0.,.07,.02);
-            float dash2=box(mod(z,7.),0.,3.2,.03)*box(abs(vW.x+3.6),0.,.07,.02);
-            float edge=box(abs(vW.x),10.7,10.82,.02)*smoothstep(40.,12.,d0);
-            col+=vec3(.5,.55,.55)*(dash+dash2)+uGlow*edge*.35;
+            vec3 col=vec3(.012,.016,.019)+grain*.006;
+            // calçadas, com juntas a cada 3 m
+            float walk=smoothstep(10.95,11.05,ax)*(1.-smoothstep(15.,15.1,ax));
+            col=mix(col,vec3(.034,.04,.048)+grain*.01,walk);
+            col+=walk*box(mod(z,3.),0.,.05,.01)*.035;
+            // meio-fio iluminado na cor da marca
+            col+=uGlow*box(ax,10.8,10.95,.02)*.6;
+            // faixas tracejadas
+            col+=vec3(.5,.55,.55)*box(mod(z,7.),0.,3.2,.03)*box(abs(ax-3.6),0.,.07,.02);
+            // faixa de pedestres a cada 96 m
+            col+=vec3(.42,.46,.46)*box(mod(z,96.),0.,4.,.03)*box(mod(vW.x+20.,1.5),0.,.8,.02)*step(ax,10.4);
             float d=length(vW.xz);
-            float pool=exp(-d*d*.012);
-            col+=uGlow*pool*.018;
-            float fade=smoothstep(46.,9.,d);
-            gl_FragColor=vec4(col,mix(0.,uAlpha,fade)*(1.-.0));
+            col+=uGlow*exp(-d*d*.012)*.018;
+            float far=distance(vW.xz,cameraPosition.xz);
+            float fade=smoothstep(105.,35.,far)*(1.-smoothstep(20.,30.,ax));
+            gl_FragColor=vec4(col,uAlpha*fade);
             #include <colorspace_fragment>
           }`} />
     </mesh>
@@ -129,7 +137,7 @@ function Streaks({ color, count, reduced }: { color: string; count: number; redu
  */
 const PLACE_S = 10; // segundos em cada lugar (2 ângulos de câmera de 5 s)
 const SPEED = 16;
-const LEN = 120;
+const LEN = 200;
 
 type Prop = { x: number; y: number; z: number; sx: number; sy: number; sz: number; color?: THREE.Color };
 
@@ -137,20 +145,20 @@ function useProps(mobile: boolean) {
   return useMemo(() => {
     const rnd = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
     const poles: Prop[] = [], heads: Prop[] = [], rings: Prop[] = [], towers: Prop[] = [], windows: Prop[] = [];
-    for (let i = 0; i < (mobile ? 8 : 12); i++) for (const side of [-1, 1]) {
-      const z = i * (LEN / (mobile ? 8 : 12)) + (side > 0 ? 5 : 0);
+    for (let i = 0; i < (mobile ? 14 : 20); i++) for (const side of [-1, 1]) {
+      const z = i * (LEN / (mobile ? 14 : 20)) + (side > 0 ? 5 : 0);
       poles.push({ x: side * 13, y: 2.6, z, sx: 0.09, sy: 5.2, sz: 0.09 });
       heads.push({ x: side * 12.1, y: 5.15, z, sx: 1.9, sy: 0.1, sz: 0.34 });
     }
     const blue = new THREE.Color("#0B6BFF"), cyan = new THREE.Color("#00E1FF");
-    for (let i = 0; i < (mobile ? 12 : 18); i++) {
-      const z = i * (LEN / (mobile ? 12 : 18)), col = i % 2 ? blue : cyan;
+    for (let i = 0; i < (mobile ? 20 : 30); i++) {
+      const z = i * (LEN / (mobile ? 20 : 30)), col = i % 2 ? blue : cyan;
       rings.push({ x: -12.5, y: 3.6, z, sx: 0.18, sy: 7.2, sz: 0.14, color: col });
       rings.push({ x: 12.5, y: 3.6, z, sx: 0.18, sy: 7.2, sz: 0.14, color: col });
       rings.push({ x: 0, y: 7.2, z, sx: 25.2, sy: 0.18, sz: 0.18, color: col });
     }
-    for (let i = 0; i < (mobile ? 14 : 24); i++) for (const side of [-1, 1]) {
-      const h = 4 + rnd() * 16, w = 3 + rnd() * 3, x = side * (16 + rnd() * 7), z = i * (LEN / (mobile ? 14 : 24)) + rnd() * 3;
+    for (let i = 0; i < (mobile ? 22 : 40); i++) for (const side of [-1, 1]) {
+      const h = 4 + rnd() * 16, w = 3 + rnd() * 3, x = side * (16.5 + rnd() * 7), z = i * (LEN / (mobile ? 22 : 40)) + rnd() * 3;
       towers.push({ x, y: h / 2, z, sx: w, sy: h, sz: 3 + rnd() * 3 });
       for (let k = 0; k < 3; k++) if (rnd() > 0.35) windows.push({ x: x - side * (w / 2 + 0.02), y: 1.5 + rnd() * (h - 2), z: z + (rnd() - 0.5) * 2, sx: 0.04, sy: 0.35, sz: 1 + rnd() * 1.5, color: rnd() > 0.6 ? cyan : new THREE.Color("#BFD7FF") });
     }
@@ -194,8 +202,9 @@ function Props({ items, weight, color, emissive, reduced }: { items: Prop[]; wei
 /** Ângulos de câmera, como num comercial: lateral (mostra a adesivagem), frente baixa, de cima e traseira. */
 const SHOTS: { pos: [number, number, number]; look: [number, number, number] }[] = [
   { pos: [10.6, 1.35, 0.9], look: [0, 0.55, 0.2] },   // lateral direita: a adesivagem inteira
+  { pos: [1.6, 2.3, -9.6], look: [0, 0.8, 6] },       // atrás do carro, olhando a avenida até o horizonte
   { pos: [5.4, 0.85, 9.4], look: [0, 0.5, 0.3] },     // frente, três quartos, câmera baixa
-  { pos: [-3.4, 9.8, -7.2], look: [0, 0.2, 0.6] },    // de cima, por trás
+  { pos: [0, 4.6, -15], look: [0, 0.3, 7] },          // drone baixo atrás (abaixo do teto do túnel): a rua inteira à frente
   { pos: [-10.6, 1.45, -0.7], look: [0, 0.55, 0.2] }, // lateral esquerda
   { pos: [-5.8, 1.9, -9.4], look: [0, 0.6, 0] },      // traseira, três quartos
   { pos: [7.6, 3.8, 8.2], look: [0, 0.45, 0] },       // três quartos, de cima
@@ -203,7 +212,7 @@ const SHOTS: { pos: [number, number, number]; look: [number, number, number] }[]
 
 function Scene({ colors, yaw, reduced, mobile, centered, onReady }: SceneProps) {
   const props = useProps(mobile);
-  const wAvenue = useRef(1), wTunnel = useRef(0), wCity = useRef(0);
+  const wAvenue = useRef(1), wTunnel = useRef(0), wCity = useRef(1);
   const camPos = useRef(new THREE.Vector3(10.6, 1.35, 0.9));
   const camLook = useRef(new THREE.Vector3(0, 0.62, 0));
   const { root, wheels } = useCar(colors);
@@ -242,10 +251,10 @@ function Scene({ colors, yaw, reduced, mobile, centered, onReady }: SceneProps) 
       scene.environmentRotation.y = Math.sin(t * 0.22) * 0.5;
     }
 
-    // Lugar atual: avenida → túnel → cidade, em loop. Cada um cresce do chão ao entrar.
+    // A avenida corre sempre entre prédios; de tempos em tempos entra num túnel de luz. Cada trecho cresce do chão.
     const place = reduced ? 0 : Math.floor(age / PLACE_S) % 3;
     const damp = (r: React.RefObject<number>, on: boolean) => { r.current = THREE.MathUtils.damp(r.current!, on ? 1 : 0, 2.4, dt); };
-    damp(wAvenue, place === 0); damp(wTunnel, place === 1); damp(wCity, place === 2);
+    damp(wAvenue, place !== 1); damp(wTunnel, place === 1); damp(wCity, true);
 
     // Câmera: troca de ângulo a cada 5 s, deslizando (sem corte seco). No celular, mais longe para caber.
     const shot = SHOTS[reduced ? 0 : Math.floor(age / (PLACE_S / 2)) % SHOTS.length];
@@ -278,7 +287,7 @@ function Scene({ colors, yaw, reduced, mobile, centered, onReady }: SceneProps) 
         </mesh>
       </group>
       <Road color={colors.glow} reduced={reduced} reflective={!mobile} />
-      <Streaks color={colors.glow} count={mobile ? 8 : 18} reduced={reduced} />
+      <Streaks color={colors.glow} count={mobile ? 14 : 34} reduced={reduced} />
       {/* Avenida */}
       <Props items={props.poles} weight={wAvenue} color="#1A2436" reduced={reduced} />
       <Props items={props.heads} weight={wAvenue} color="#E8F1FF" emissive reduced={reduced} />
@@ -287,8 +296,8 @@ function Scene({ colors, yaw, reduced, mobile, centered, onReady }: SceneProps) 
       {/* Cidade */}
       <Props items={props.towers} weight={wCity} color="#0A1424" reduced={reduced} />
       <Props items={props.windows} weight={wCity} color="#BFD7FF" emissive reduced={reduced} />
-      <fog attach="fog" args={["#02060E", 30, 70]} />
-      <Environment resolution={mobile ? 64 : 128} frames={1} background={false}>
+      <fog attach="fog" args={["#02060E", 28, 95]} />
+      <Environment resolution={mobile ? 128 : 256} frames={1} background={false}>
         <color attach="background" args={["#05090b"]} />
         <Lightformer form="rect" intensity={7} position={[0, 7, 0]} rotation-x={Math.PI / 2} scale={[14, 5, 1]} color="#ffffff" />
         <Lightformer form="rect" intensity={3.5} position={[-7, 2.5, 2]} rotation-y={Math.PI / 2} scale={[12, 1.1, 1]} color={colors.glow} />
@@ -340,9 +349,9 @@ export default function Car3D({ colors, centered = false, onReady, onFail }: { c
     <div ref={host} {...handlers} tabIndex={0} role="img"
       aria-label="Carro conceito 3D com as cores da Orbi. Arraste para os lados ou use as setas do teclado para girar."
       className="absolute inset-0 cursor-grab active:cursor-grabbing" style={{ touchAction: "pan-y" }}>
-      <Canvas dpr={[1, mobile ? 1 : 1.25]} frameloop={visible ? "always" : "never"}
-        camera={{ fov: 26, near: 1.5, far: 90, position: [2, 2, 12] }}
-        gl={{ antialias: !mobile, alpha: true, powerPreference: "high-performance", toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+      <Canvas dpr={[1, mobile ? 1.5 : 1.75]} frameloop={visible ? "always" : "never"}
+        camera={{ fov: 26, near: 1.5, far: 220, position: [2, 2, 12] }}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance", toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
         onCreated={({ gl }) => { gl.domElement.addEventListener("webglcontextlost", onFail, { once: true }); }}>
         <Suspense fallback={null}>
           <Scene colors={colors} yaw={yaw} reduced={reduced} mobile={mobile} centered={centered} onReady={onReady} />
