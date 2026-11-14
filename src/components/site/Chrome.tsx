@@ -6,7 +6,6 @@ import { motion, useScroll, useSpring } from "motion/react";
 import { Logo } from "@/components/Logo";
 import { OrbiAccent } from "@/components/OrbiMark";
 import { Icon } from "@/components/Icon";
-import { ThemeToggle } from "@/components/ui";
 
 const LINKS = [
   { href: "/como-funciona", label: "Como funciona" },
@@ -21,25 +20,24 @@ export function SiteNav({ account = null }: { account?: string | null }) {
   const [open, setOpen] = useState(false);
   const path = usePathname();
   useEffect(() => setOpen(false), [path]);
-  // Barra sempre escura: todas as páginas do site abrem com a faixa escura, como a inicial.
-  const overHero = true;
+  // Barra branca, como o resto do site (as partes escuras são painéis abaixo dela).
+  const overHero = false;
   const pill = "rounded-full px-3.5 py-2 text-sm font-semibold transition-colors hover:bg-[color-mix(in_srgb,currentColor_12%,transparent)]";
 
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${overHero ? "on-deep border-b border-[color-mix(in_srgb,var(--on-deep)_8%,transparent)] bg-[color-mix(in_srgb,var(--deep)_78%,transparent)] text-on-deep backdrop-blur-xl" : "border-b border-line bg-[color-mix(in_srgb,var(--bg)_88%,transparent)] text-ink backdrop-blur-lg"}`}>
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-2 px-5 md:px-10">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-2 px-5 md:px-10">
         <Link href="/" aria-label="Orbi, página inicial"><Logo size={24} hole={overHero ? "var(--deep)" : "var(--bg)"} /></Link>
         <nav aria-label="Principal" className="mr-auto ml-4 hidden items-center gap-1 lg:flex">
           {LINKS.map((l) => <Link key={l.href} href={l.href} aria-current={path === l.href ? "page" : undefined} className={pill}>{l.label}</Link>)}
         </nav>
         <div className="flex items-center gap-1">
-          <ThemeToggle />
           <Link href="/ajuda" className={`${pill} hidden lg:block`}>Ajuda</Link>
           {account
-            ? <Link href={account} className="rounded-full bg-[var(--cta)] px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_var(--glow)] transition-transform hover:-translate-y-px">Minha conta</Link>
+            ? <Link href={account} className="rounded-full bg-[var(--cta)] px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-px">Minha conta</Link>
             : <>
                 <Link href="/entrar" className={`${pill} hidden sm:block`}>Entrar</Link>
-                <Link href="/cadastro" className="hidden rounded-full bg-[var(--cta)] px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_var(--glow)] transition-transform hover:-translate-y-px sm:block">Criar conta</Link>
+                <Link href="/cadastro" className="hidden rounded-full bg-[var(--cta)] px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-px sm:block">Criar conta</Link>
               </>}
           <button type="button" className="grid size-11 place-items-center lg:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? "Fechar menu" : "Abrir menu"}>
             <Icon name={open ? "close" : "menu"} />
@@ -68,7 +66,7 @@ export function PlumbLine() {
 export function SiteFooter({ cities = [] }: { cities?: { slug: string; name: string }[] }) {
   return (
     <footer className="on-deep bg-deep text-on-deep">
-      <div className="mx-auto grid max-w-[1280px] gap-10 px-5 py-14 md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] md:px-10">
+      <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-14 md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] md:px-10">
         <div>
           <Logo size={28} />
           <p className="mt-4 max-w-xs text-on-deep-muted">Mobilidade urbana mais simples, rápida e segura.</p>
@@ -79,7 +77,7 @@ export function SiteFooter({ cities = [] }: { cities?: { slug: string; name: str
         <FooterCol title="Empresa" links={[["A empresa", "/empresa"], ["Central de ajuda", "/ajuda"], ["Seja um parceiro", "/parceiros"], ["Tenho interesse", "/interesse"], ["Contato", "/contato"]]} />
         <FooterCol title="Transparência" links={[["Privacidade", "/privacidade"], ["Termos de uso", "/termos"], ["Termo do motorista", "/termos-motorista"], ["O que já funciona", "/status"], ["Créditos", "/creditos"]]} />
       </div>
-      <p aria-hidden="true" className="display pointer-events-none mx-auto max-w-[1280px] overflow-hidden px-5 text-center text-[clamp(5rem,26vw,22rem)] leading-[.78] tracking-tight select-none md:px-10"><span className="relative inline-block" style={{ letterSpacing: "-0.06em", backgroundImage: "linear-gradient(180deg, color-mix(in srgb, var(--on-deep) 26%, transparent), transparent 85%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>orbı
+      <p aria-hidden="true" className="display pointer-events-none mx-auto max-w-[1440px] overflow-hidden px-5 text-center text-[clamp(5rem,26vw,22rem)] leading-[.78] tracking-tight select-none md:px-10"><span className="relative inline-block" style={{ letterSpacing: "-0.06em", backgroundImage: "linear-gradient(180deg, color-mix(in srgb, var(--on-deep) 26%, transparent), transparent 85%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>orbı
         <OrbiAccent className="absolute text-[color-mix(in_srgb,#1166FF_70%,transparent)]" style={{ width: ".36em", right: "-.06em", top: "-.02em" }} /></span></p>
       <div className="pb-8" />
     </footer>

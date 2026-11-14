@@ -27,7 +27,7 @@ export const GET = publicRoute<{ action?: string[] }>(async ({ user, params }) =
   // Fora da cópia: resumo da senha e segredos da verificação em duas etapas.
   const { passwordHash: _p, totpSecret: _t, recoveryCodes: _r, totpLastStep: _l, ...profile } = user;
   return new NextResponse(JSON.stringify({ exportedAt: new Date(), profile, driver, vehicles, rides, ledger, tickets, notifications, savedPlaces }, null, 2), {
-    headers: { "Content-Type": "application/json", "Content-Disposition": 'attachment; filename="meus-dados-prumo.json"' },
+    headers: { "Content-Type": "application/json", "Content-Disposition": 'attachment; filename="meus-dados-orbi.json"' },
   });
 });
 

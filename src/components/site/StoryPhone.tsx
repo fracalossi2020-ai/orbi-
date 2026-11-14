@@ -144,7 +144,7 @@ export function StoryPhone() {
 
   return (
     <section ref={host} aria-labelledby="historia" className="on-deep relative bg-deep text-on-deep lg:h-[340svh]">
-      <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-5 py-20 md:px-10 lg:sticky lg:top-0 lg:h-svh lg:grid-cols-[1.1fr_1fr] lg:py-0">
+      <div className="mx-auto grid max-w-[1440px] items-center gap-10 px-5 py-20 md:px-10 lg:sticky lg:top-0 lg:h-svh lg:grid-cols-[1.1fr_1fr] lg:py-0">
         <div className="relative">
           <p className="mono-label text-on-deep-muted">Como pedir uma viagem</p>
           <h2 id="historia" className="display mt-3 max-w-[14ch] text-[clamp(2.2rem,4.6vw,4rem)]">Do toque ao destino.</h2>

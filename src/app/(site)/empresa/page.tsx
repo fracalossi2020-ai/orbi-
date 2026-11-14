@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { Icon } from "@/components/Icon";
-import { Bob } from "@/components/Logo";
+import { OrbiMark } from "@/components/OrbiMark";
 import { CoverageMap } from "@/components/site/CoverageMap";
+import { OrbiStory } from "@/components/site/OrbiStory";
 import { Reveal } from "@/components/site/Fx";
 import { Dark, PageHead } from "@/components/site/Page";
 import { getDb, schema as s } from "@/db";
@@ -25,16 +26,17 @@ export default async function Empresa() {
   const coverage = await areas();
   return (
     <>
-      <PageHead eyebrow="A empresa" title="Prumo é o fio que aponta a direção certa." lead="Na construção, o prumo garante que tudo fique em pé. É a mesma ideia que queremos para a mobilidade do Vale do Aço: uma operação correta com quem viaja e com quem dirige."
+      <PageHead eyebrow="A empresa" title="Orbi: tudo girando em volta de você." lead="O nome vem de órbita. Quem viaja fica no centro: o motorista vem até você, o preço aparece antes e a viagem pode ser acompanhada do começo ao fim. É assim que queremos a mobilidade do Vale do Aço, correta com quem viaja e com quem dirige."
         visual={
-          <div aria-hidden="true" className="relative mx-auto grid h-[380px] w-full max-w-[420px] place-items-start justify-center">
-            <div className="anim-swing flex flex-col items-center text-[var(--mark)]" style={{ animationDuration: "3.6s" }}>
-              <span className="block h-[210px] w-px bg-current" />
-              <Bob className="-mt-px h-28 w-[76px]" hole="var(--deep)" />
+          <div aria-hidden="true" className="relative mx-auto grid aspect-square w-[78%] max-w-[380px] place-items-center">
+            <div className="absolute inset-0 rounded-full border-2 border-[color-mix(in_srgb,var(--primary)_30%,transparent)] motion-safe:animate-spin" style={{ animationDuration: "40s" }}>
+              <span className="absolute -top-2 left-1/2 size-4 -translate-x-1/2 rounded-full bg-primary" />
             </div>
-            <span className="mono-label absolute bottom-0 text-on-deep-muted">Direção certa · sempre na vertical</span>
+            <div className="absolute inset-[14%] rounded-full border border-line" />
+            <OrbiMark size={200} className="h-auto w-[min(200px,44vw)]" gid="empresa-mark" />
           </div>
         } />
+      <OrbiStory />
       <Dark>
         <ul className="grid gap-4 lg:grid-cols-3">
           {VALUES.map(([icon, title, text], i) => (

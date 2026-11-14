@@ -204,7 +204,7 @@ test("trajeto digitado no site chega à tela de preços depois de criar a conta"
   // Resposta fixa: este cenário testa o formulário, não o serviço público de endereços.
   await page.route("**/api/geo/search*", (r) => r.fulfill({ json: { places: [{ label: "Coronel Fabriciano", detail: "Minas Gerais", lat: -19.52, lng: -42.628 }] } }));
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Sua órbita.");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Vá de Orbi.");
   await page.getByRole("button", { name: "Ver preços" }).click();
   await expect(page.getByText("Escolha o local de chegada")).toBeVisible();
 

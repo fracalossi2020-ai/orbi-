@@ -69,7 +69,7 @@ function BuildStory() {
   return (
     <div ref={ref} className={reduce ? "" : "h-[340vh]"}>
       <div className={`${reduce ? "" : "sticky top-0"} flex min-h-[100svh] items-center`}>
-        <div className="mx-auto grid w-full max-w-[1280px] items-center gap-8 px-5 pt-20 pb-10 md:px-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+        <div className="mx-auto grid w-full max-w-[1440px] items-center gap-8 px-5 pt-20 pb-10 md:px-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
           <div className="order-2 lg:order-1">
             <p className="mono-label text-[var(--mark)]">O que a Orbi representa</p>
             {/* Etapas da construção: são uma sequência de verdade, por isso numeradas */}
@@ -111,7 +111,7 @@ const ESSENCE = [
 function Essence() {
   const reduce = useReducedMotion();
   return (
-    <div className="mx-auto max-w-[1280px] px-5 py-24 md:px-10 md:py-32">
+    <div className="mx-auto max-w-[1440px] px-5 py-24 md:px-10 md:py-32">
       <div className="grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
         <div>
           <p className="mono-label text-[var(--mark)]">Essência da marca</p>
@@ -140,7 +140,7 @@ function Where({ cities }: { cities: { slug: string; name: string }[] }) {
   const reduce = useReducedMotion();
   if (!cities.length) return null;
   return (
-    <div className="mx-auto max-w-[1280px] px-5 pb-24 md:px-10 md:pb-32">
+    <div className="mx-auto max-w-[1440px] px-5 pb-24 md:px-10 md:pb-32">
       <div className="rounded-[32px] border border-[color-mix(in_srgb,var(--on-deep)_10%,transparent)] p-6 md:p-10" style={{ background: "radial-gradient(120% 140% at 100% 0%, rgb(11 107 255 / .22), transparent 55%), color-mix(in srgb, #0A1E3D 35%, transparent)" }}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -167,12 +167,13 @@ function Where({ cities }: { cities: { slug: string; name: string }[] }) {
   );
 }
 
-export function OrbiStory({ cities }: { cities: { slug: string; name: string }[] }) {
+/** História da marca. Sem cidades, mostra só a construção do símbolo e as ideias (a página A empresa já fala de onde atuamos). */
+export function OrbiStory({ cities }: { cities?: { slug: string; name: string }[] }) {
   return (
-    <section aria-label="O que é a Orbi" className="on-deep relative bg-deep text-on-deep">
+    <section aria-label="A história da Orbi" className="on-deep relative bg-deep text-on-deep">
       <BuildStory />
       <Essence />
-      <Where cities={cities} />
+      {cities && <Where cities={cities} />}
     </section>
   );
 }

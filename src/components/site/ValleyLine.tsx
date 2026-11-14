@@ -262,7 +262,7 @@ export function ValleyLine({ activeCities }: { activeCities: string[] }) {
 
   return (
     <section aria-labelledby="linha-titulo" className="relative overflow-hidden bg-bg text-ink">
-      <div className="relative mx-auto max-w-[1280px] px-5 pt-20 pb-16 md:px-10 md:pt-28">
+      <div className="relative mx-auto max-w-[1440px] px-5 pt-20 pb-16 md:px-10 md:pt-28">
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr] md:items-end">
           <div>
             <p className="mono-label text-brand">Vale do Aço</p>
@@ -278,7 +278,7 @@ export function ValleyLine({ activeCities }: { activeCities: string[] }) {
 
       {/* Panorama: no celular, arraste para o lado para ver as três cidades */}
       <div className="relative overflow-x-auto overscroll-x-contain [scrollbar-width:none] md:overflow-visible">
-        <div ref={ref} className="relative mx-auto w-[960px] max-w-none md:w-full md:max-w-[1280px] md:px-10">
+        <div ref={ref} className="relative mx-auto w-[960px] max-w-none md:w-full md:max-w-[1440px] md:px-10">
           <div className="relative" style={{ aspectRatio: `${W} / ${H}` }}>
             <svg viewBox={`0 0 ${W} ${H}`} className="valley-fade absolute inset-0 size-full" aria-hidden="true">
               <Ridges />
@@ -327,7 +327,7 @@ export function ValleyLine({ activeCities }: { activeCities: string[] }) {
       <p className="mono-label px-5 pt-2 text-center text-muted md:hidden">Arraste para o lado para ver as três cidades</p>
 
       {/* Lista de bairros, por cidade */}
-      <div className="relative mx-auto max-w-[1280px] px-5 pt-8 pb-20 md:px-10 md:pb-28">
+      <div className="relative mx-auto max-w-[1440px] px-5 pt-8 pb-20 md:px-10 md:pb-28">
         <div className={`grid gap-6 ${many ? "md:grid-cols-3" : ""}`}>
           {zones.map((z) => (
             <div key={z.city}>

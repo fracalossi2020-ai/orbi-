@@ -4,6 +4,7 @@ import {
   GearSix, Gift, List, LockSimple, MapPin, MapTrifold, Megaphone, Moon, Motorcycle, Package, Path, Plus, Question, Receipt, Scales,
   ShareNetwork, ShieldCheck, SignOut, Siren, Sparkle, Stack, Star, SteeringWheel, Storefront, Sun, Ticket, Tire, Truck, User, Users,
   Wallet, Wrench, X, Money, QrCode, CreditCard, DeviceMobile, Copy, NavigationArrow, MagnifyingGlass, FirstAidKit, AirplaneTilt, GraduationCap, Bank, Tree, Factory, Church, SoccerBall, Bus,
+  InstagramLogo, TiktokLogo, FacebookLogo, Envelope, WhatsappLogo,
 } from "@phosphor-icons/react/dist/ssr";
 
 /**
@@ -19,6 +20,7 @@ const ICONS: Record<string, PhosphorIcon> = {
   check: Check, plus: Plus, logout: SignOut, gift: Gift, lock: LockSimple, package: Package, steering: SteeringWheel,
   home: House, briefcase: Briefcase, calendar: CalendarBlank, bolt: Lightning, search: MagnifyingGlass, money: Money, qr: QrCode, card: CreditCard, phone: DeviceMobile, copy: Copy, navigation: NavigationArrow,
   hospital: FirstAidKit, airport: AirplaneTilt, school: GraduationCap, civic: Bank, park: Tree, factory: Factory, church: Church, stadium: SoccerBall, bus: Bus,
+  instagram: InstagramLogo, tiktok: TiktokLogo, facebook: FacebookLogo, mail: Envelope, whatsapp: WhatsappLogo,
 };
 
 export type IconName = keyof typeof ICONS;

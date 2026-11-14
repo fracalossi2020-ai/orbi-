@@ -67,4 +67,4 @@ src/lib/identities.ts + src/app/globals.css   As 4 identidades visuais
 
 ## Créditos
 
-Modelo 3D: "Car Concept", de Eric Chadwick / Darmstadt Graphics Group, CC BY 4.0, de um modelo original em domínio público de Unity Fan. Modificado pela Orbi: cores, remoção de marcas de terceiros e compressão (`scripts/build-car-model.ts`). Mapas © colaboradores do OpenStreetMap.
+Mapas © colaboradores do OpenStreetMap.

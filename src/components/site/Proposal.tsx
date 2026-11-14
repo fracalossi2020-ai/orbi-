@@ -14,7 +14,7 @@ export function Proposal() {
   const [active, setActive] = useState(2);
   const reduce = useReducedMotion();
   return (
-    <section className="mx-auto max-w-[1280px] px-5 py-24 md:px-10 md:py-36">
+    <section className="mx-auto max-w-[1440px] px-5 py-24 md:px-10 md:py-36">
       <motion.h2 initial={reduce ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: .7 }}
         className="display max-w-[14ch] text-[clamp(2.4rem,6vw,5.2rem)]">Mobilidade que pensa em todos.</motion.h2>
 

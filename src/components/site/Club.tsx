@@ -45,7 +45,7 @@ export function Club() {
   const reduce = useReducedMotion();
   return (
     <section ref={host} className="on-deep overflow-hidden bg-deep text-on-deep">
-      <div className="mx-auto max-w-[1280px] px-5 py-24 md:px-10 md:py-36">
+      <div className="mx-auto max-w-[1440px] px-5 py-24 md:px-10 md:py-36">
         <div className="grid gap-8 lg:grid-cols-[3fr_2fr] lg:items-end">
           <motion.h2 style={reduce ? undefined : { y }} className="display text-[clamp(2.4rem,6vw,5.4rem)]">Quem movimenta a cidade também merece ser valorizado.</motion.h2>
           <div>

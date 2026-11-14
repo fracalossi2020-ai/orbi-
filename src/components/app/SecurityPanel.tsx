@@ -17,7 +17,7 @@ function RecoveryCodes({ codes, onDone }: { codes: string[]; onDone: () => void 
       <ol className="num grid grid-cols-2 gap-2 rounded-2xl bg-surface-2 p-4 font-mono text-sm">{codes.map((c) => <li key={c}>{c}</li>)}</ol>
       <div className="flex flex-wrap gap-2">
         <button type="button" className="btn btn-soft btn-sm" onClick={async () => { try { await navigator.clipboard.writeText(text); setCopied(true); } catch { /* sem área de transferência */ } }}><Icon name="copy" size={16} />{copied ? "Copiados" : "Copiar"}</button>
-        <a className="btn btn-soft btn-sm" href={`data:text/plain;charset=utf-8,${encodeURIComponent(text)}`} download="prumo-codigos-de-recuperacao.txt">Baixar</a>
+        <a className="btn btn-soft btn-sm" href={`data:text/plain;charset=utf-8,${encodeURIComponent(text)}`} download="orbi-codigos-de-recuperacao.txt">Baixar</a>
         <button type="button" className="btn btn-primary btn-sm" onClick={onDone}>Já guardei</button>
       </div>
     </div>

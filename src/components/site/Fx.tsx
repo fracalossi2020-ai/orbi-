@@ -4,32 +4,6 @@ import { motion, useReducedMotion } from "motion/react";
 import { Icon } from "@/components/Icon";
 import Link from "next/link";
 
-/**
- * Um único ouvinte de ponteiro para todo o site: grava a posição do mouse em cada elemento
- * [data-glow], e o CSS desenha a luz. Não faz nada em telas de toque.
- */
-export function Spotlight() {
-  useEffect(() => {
-    if (matchMedia("(pointer: coarse)").matches) return;
-    let raf = 0;
-    let x = 0;
-    let y = 0;
-    const paint = () => {
-      raf = 0;
-      document.querySelectorAll<HTMLElement>("[data-glow]").forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > innerHeight) return;
-        el.style.setProperty("--mx", `${x - r.left}px`);
-        el.style.setProperty("--my", `${y - r.top}px`);
-      });
-    };
-    const on = (e: PointerEvent) => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(paint); };
-    addEventListener("pointermove", on, { passive: true });
-    return () => { removeEventListener("pointermove", on); cancelAnimationFrame(raf); };
-  }, []);
-  return null;
-}
-
 /** Entrada suave ao rolar; some com movimento reduzido. Dentro de listas, use as="li" (HTML válido). */
 export function Reveal({ children, className = "", delay = 0, as = "div" }: { children: React.ReactNode; className?: string; delay?: number; as?: "div" | "li" }) {
   const reduce = useReducedMotion();

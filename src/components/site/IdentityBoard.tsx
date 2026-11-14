@@ -110,7 +110,7 @@ export function IdentityBoard({ official, preview, canSetOfficial }: { official:
     } catch (e) { setError((e as Error).message); }
   };
   return (
-    <div className="pt-28 pb-20">
+    <div className="pt-12 pb-20">
       <div className="mx-auto max-w-[1800px] px-5 md:px-10">
         <h1 className="display max-w-[20ch] text-[clamp(2.4rem,5vw,4.6rem)]">Quatro identidades. Escolha uma.</h1>
         <p className="mt-4 max-w-2xl text-lg text-muted">Todas usam o mesmo símbolo: o peso do prumo, cuja ponta é também um pino de mapa. Ao escolher, a plataforma inteira muda, inclusive o carro 3D da página inicial.</p>

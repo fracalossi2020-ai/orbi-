@@ -64,20 +64,6 @@
 /* Texto e traços com o degradê do símbolo */
 .text-grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/*
- * Fundo das partes escuras: em vez de preto chapado, dois brilhos suaves da marca (azul no alto, ciano embaixo)
- * e uma grade de pontos quase invisível, como papel milimetrado. Vale para as seções escuras e para o modo escuro.
- */
-/* Os brilhos ficam longe das bordas de cima e de baixo: uma seção escura emenda na outra sem linha. */
-section.on-deep.bg-deep {
-  background-image:
-    radial-gradient(45% 32% at 92% 45%, rgb(11 107 255 / .14), transparent 100%),
-    radial-gradient(38% 28% at 6% 62%, rgb(0 225 255 / .06), transparent 100%);
-}
-.orbit-grid { background-image: radial-gradient(rgb(245 247 250 / .09) 1px, transparent 1.3px); background-size: 26px 26px; -webkit-mask-image: radial-gradient(70% 70% at 50% 40%, #000 20%, transparent 75%); mask-image: radial-gradient(70% 70% at 50% 40%, #000 20%, transparent 75%); }
-[data-theme="dark"] section.bg-bg, [data-theme="dark"] section.bg-surface {
-  background-image: radial-gradient(50% 40% at 90% 10%, rgb(11 107 255 / .12), transparent 60%), radial-gradient(40% 40% at 5% 95%, rgb(0 225 255 / .05), transparent 60%);
-}
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) section.bg-bg, :root:not([data-theme]) section.bg-surface {
     background-image: radial-gradient(50% 40% at 90% 10%, rgb(11 107 255 / .12), transparent 60%), radial-gradient(40% 40% at 5% 95%, rgb(0 225 255 / .05), transparent 60%);
@@ -129,13 +115,8 @@ select.input { appearance: auto; }
 /* Etiqueta escura sobre o mapa claro */
 @utility glass-map { background-color: color-mix(in srgb, var(--deep) 86%, transparent); color: var(--on-deep); box-shadow: 0 6px 18px -8px rgb(0 0 0 / .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .mono-label { font-family: var(--f-inter), system-ui, sans-serif; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; }
-.hero-aurora { -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent); background: radial-gradient(55% 50% at 80% 25%, color-mix(in srgb, var(--primary) 42%, transparent), transparent 70%), radial-gradient(45% 45% at 5% 95%, color-mix(in srgb, var(--mark, var(--on-deep-muted)) 14%, transparent), transparent 70%); }
-.grid-lines { background-image: linear-gradient(color-mix(in srgb, var(--on-deep) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--on-deep) 5%, transparent) 1px, transparent 1px); background-size: 56px 56px; -webkit-mask-image: radial-gradient(75% 70% at 45% 40%, #000 25%, transparent 85%); mask-image: radial-gradient(75% 70% at 45% 40%, #000 25%, transparent 85%); }
 /* Cartão que brilha sob o ponteiro: a luz e a borda seguem o mouse (a posição vem de Spotlight) */
 [data-glow] { position: relative; isolation: isolate; }
-[data-glow]::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s; background: radial-gradient(340px circle at var(--mx, -999px) var(--my, -999px), color-mix(in srgb, var(--mark, var(--on-deep)) 20%, transparent), transparent 70%); }
-[data-glow]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s; padding: 1px; background: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), var(--mark, var(--on-deep)), transparent 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
-@media (hover: hover) { [data-glow]:hover::before, [data-glow]:hover::after { opacity: 1; } }
 
 /* Faixa em movimento */
 @keyframes marquee { to { transform: translateX(-50%); } }
@@ -286,3 +267,37 @@ input[type="checkbox"], input[type="radio"] { flex-shrink: 0; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/*
+ * Site (páginas públicas): branco de base, texto preto e o Azul Elétrico nos destaques, nos dois temas do aparelho.
+ * As partes escuras (e a azul) viram painéis de cantos arredondados sobre o branco, sem faixa de borda a borda.
+ * Os apps (passageiro, motorista, painel) continuam com tema claro/escuro.
+ */
+.site-one {
+  --bg: #FFFFFF; --surface: #FFFFFF; --surface-2: #F1F4F8; --ink: #02060E; --muted: #536071; --line: #E3E8EE;
+  --primary: #0356C5; --on-primary: #FFFFFF; --accent: #0A1E3D; --on-accent: #FFFFFF; --accent-strong: #0A1E3D;
+  --brand-text: #0356C5; --cta: #0356C5; --cta-ink: #FFFFFF; --mark: #5CC8FF;
+  --deep: #02060E; --on-deep: #F5F7FA; --on-deep-muted: #9AA8BD;
+  --danger: #B3261E; --ok: #1B7F5A; --warn: #8A5A00;
+  background: var(--bg); color: var(--ink); color-scheme: light;
+}
+html:has(.site-one), html:has(.site-one) body { background: #FFFFFF; }
+/* O menu é fixo (64 px): o conteúdo começa logo abaixo dele. */
+.site-one main { padding-top: 64px; }
+.site-one footer.on-deep { margin: 0 8px 8px; border-radius: 28px; overflow: hidden; }
+@media (min-width: 768px) { .site-one footer.on-deep { margin: 0 12px 12px; border-radius: 36px; } }
+.site-one main section.on-deep { margin: 8px; border-radius: 28px; overflow: hidden; }
+@media (min-width: 768px) { .site-one main section.on-deep { margin: 12px; border-radius: 36px; } }
+/* Abertura em branco: as cores "escuras" do hero passam a ser as do papel. */
+.site-one main section.hero-light {
+  --deep: #FFFFFF; --on-deep: #02060E; --on-deep-muted: #536071; --mark: #0356C5;
+  margin: 0; border-radius: 0;
+}
+/* Painel azul (convite para o app) */
+.site-one main section.panel-blue { background: #0356C5; --deep: #0356C5; --on-deep-muted: #CFE0FA; --mark: #9FE9FF; }
+/* Símbolo grande atrás do celular: flutua devagar */
+.hero-mark { animation: hero-mark 14s ease-in-out infinite; }
+@keyframes hero-mark { 50% { transform: rotate(-6deg) translateY(-10px); } }
+.live-ping { transform-box: fill-box; transform-origin: center; animation: live-ping 1.8s ease-out infinite; }
+@keyframes live-ping { from { transform: scale(.6); opacity: .5; } to { transform: scale(1.8); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hero-mark, .live-ping { animation: none; } }

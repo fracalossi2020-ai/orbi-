@@ -24,8 +24,16 @@ const root = process.cwd();
 const REMOVE = ["src/app/api", "src/app/admin", "src/app/passageiro", "src/app/motorista", "src/app/v", "src/app/(auth)",
   "src/app/(site)/identidade", "src/app/app-icon", "src/app/manifest.ts", "src/proxy.ts"];
 
-// Arquivos que ganham uma linha só na vitrine: o modo de páginas prontas exige marcar estas rotas como fixas.
-const FORCE_STATIC = ["src/app/robots.ts", "src/app/sitemap.ts", "src/app/opengraph-image.tsx"];
+// Arquivos que ganham linhas só na vitrine. No servidor normal estas linhas quebrariam a página (as cidades
+// leem o login, e uma página com lista fixa não pode ler cookies), então ficam fora do código e entram só aqui.
+const STATIC_ONLY = 'export const dynamic = "force-static";';
+const APPEND = {
+  "src/app/robots.ts": STATIC_ONLY,
+  "src/app/sitemap.ts": STATIC_ONLY,
+  "src/app/opengraph-image.tsx": STATIC_ONLY,
+  "src/app/(site)/cidades/[slug]/page.tsx": "export async function generateStaticParams() { return (await publicTariffs()).map((c) => ({ slug: c.slug })); }",
+};
+const FORCE_STATIC = Object.keys(APPEND);
 
 const DEMO_PAGE = (title) => `import { Body, PageHead } from "@/components/site/Page";
 import { DemoNotice } from "@/components/site/DemoNotice";
@@ -69,7 +77,7 @@ function prepare() {
       fs.copyFileSync(file, path.join(stash, p));
     }
     fs.writeFileSync(file, `${text}
-export const dynamic = "force-static";
+${APPEND[p]}
 `);
   }
   const write = (rel, text) => {

@@ -51,13 +51,11 @@ export function HelpCenter() {
   const total = found.reduce((n, t) => n + t.items.length, 0);
   return (
     <>
-      <section className="on-deep relative overflow-hidden bg-deep text-on-deep">
-        <div aria-hidden="true" className="grid-lines absolute inset-0" />
-        <div aria-hidden="true" className="hero-aurora absolute inset-0 opacity-80" />
-        <div className="relative mx-auto max-w-[920px] px-5 pt-32 pb-16 text-center md:px-10 md:pt-40">
-          <p className="mono-label text-on-deep-muted">Central de ajuda</p>
+      <section className="hero-light on-deep relative overflow-hidden bg-deep text-on-deep">
+        <div className="relative mx-auto max-w-[920px] px-5 pt-12 pb-10 text-center md:px-10 md:pt-16">
+          <p className="mono-label text-brand">Central de ajuda</p>
           <h1 className="display mt-4 text-[clamp(2.6rem,6vw,5rem)] leading-[.95]">Como podemos ajudar?</h1>
-          <label className="help-search relative mx-auto mt-10 flex max-w-2xl items-center gap-3 rounded-full bg-surface px-5 text-ink shadow-[0_30px_80px_-30px_rgb(0_0_0/.8)]">
+          <label className="help-search relative mx-auto mt-10 flex max-w-2xl items-center gap-3 rounded-full border border-line bg-surface px-5 text-ink">
             <Icon name="search" size={22} className="shrink-0 text-muted" />
             <span className="sr-only">Buscar nas perguntas</span>
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ex.: cancelar, agendar, cupom, saque" className="min-h-16 w-full bg-transparent text-lg outline-none" type="search" />

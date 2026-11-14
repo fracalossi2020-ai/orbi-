@@ -128,7 +128,7 @@ export const GET = route<P>(async ({ req, user, params }) => {
       if (url.searchParams.get("format") === "csv") {
         const csv = ["dia;corridas;bruto;comissao;taxas;descontos;liquido_motoristas", ...rows.map((r) => [r.day, r.rides, r.gross, r.commission, r.fees, r.discounts, r.net].map((v, i) => (i < 2 ? v : (Number(v) / 100).toFixed(2).replace(".", ","))).join(";"))].join("\n");
         await audit(user.id, "report.export", "report");
-        return new NextResponse(`﻿${csv}`, { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="relatorio-prumo.csv"' } });
+        return new NextResponse(`﻿${csv}`, { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="relatorio-orbi.csv"' } });
       }
       return { rows };
     }

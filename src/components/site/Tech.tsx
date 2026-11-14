@@ -113,7 +113,7 @@ export function Tech() {
   const reduce = useReducedMotion();
   const Pane = PANES[tab];
   return (
-    <section className="mx-auto max-w-[1280px] px-5 py-24 md:px-10 md:py-36">
+    <section className="mx-auto max-w-[1440px] px-5 py-24 md:px-10 md:py-36">
       <h2 className="display max-w-[16ch] text-[clamp(2.4rem,6vw,5rem)]">Tecnologia a favor dos dois lados.</h2>
       <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-14">
         <div role="tablist" aria-label="Recursos da plataforma" aria-orientation="vertical">

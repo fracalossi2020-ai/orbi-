@@ -1,15 +1,12 @@
 import { Icon } from "@/components/Icon";
 
-/** Cabeçalho de página: fundo com aurora e grade, rótulo, título grande e, se houver, um elemento visual ao lado. */
+/** Cabeçalho de página, no branco como a abertura da home: rótulo, título grande e, se houver, um elemento visual ao lado. */
 export function PageHead({ title, lead, eyebrow, visual, children }: { title: string; lead?: string; eyebrow?: string; visual?: React.ReactNode; children?: React.ReactNode }) {
   return (
-    <section className="on-deep relative isolate overflow-hidden bg-deep pt-32 pb-16 text-on-deep md:pt-40 md:pb-24">
-      <div aria-hidden="true" className="hero-aurora absolute inset-0 -z-10" />
-      <div aria-hidden="true" className="grid-lines absolute inset-0 -z-10" />
-      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-deep" />
-      <div className={`mx-auto max-w-[1280px] px-5 md:px-10 ${visual ? "grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]" : ""}`}>
+    <section className="hero-light on-deep relative isolate overflow-hidden bg-deep pt-12 pb-10 text-on-deep md:pt-16 md:pb-14">
+      <div className={`mx-auto max-w-[1440px] px-5 md:px-10 ${visual ? "grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]" : ""}`}>
         <div>
-          {eyebrow && <p className="mono-label text-on-deep-muted">{eyebrow}</p>}
+          {eyebrow && <p className="mono-label text-brand">{eyebrow}</p>}
           <h1 className={`display max-w-[16ch] text-[clamp(2.5rem,6vw,5.4rem)] ${eyebrow ? "mt-4" : ""}`}>{title}</h1>
           {lead && <p className="mt-6 max-w-2xl text-lg text-on-deep-muted md:text-xl">{lead}</p>}
           {children && <div className="mt-9 flex flex-col gap-3 sm:flex-row">{children}</div>}
@@ -21,14 +18,14 @@ export function PageHead({ title, lead, eyebrow, visual, children }: { title: st
 }
 
 export function Body({ children, narrow }: { children: React.ReactNode; narrow?: boolean }) {
-  return <div className={`mx-auto px-5 py-16 md:px-10 md:py-24 ${narrow ? "max-w-3xl" : "max-w-[1280px]"}`}>{children}</div>;
+  return <div className={`mx-auto px-5 py-16 md:px-10 md:py-24 ${narrow ? "max-w-3xl" : "max-w-[1440px]"}`}>{children}</div>;
 }
 
 /** Seção escura, no mesmo tom da abertura. */
 export function Dark({ children, className = "", id }: { children: React.ReactNode; className?: string; id?: string }) {
   return (
     <section id={id} className={`on-deep bg-deep text-on-deep ${className}`}>
-      <div className="mx-auto max-w-[1280px] px-5 py-16 md:px-10 md:py-24">{children}</div>
+      <div className="mx-auto max-w-[1440px] px-5 py-16 md:px-10 md:py-24">{children}</div>
     </section>
   );
 }

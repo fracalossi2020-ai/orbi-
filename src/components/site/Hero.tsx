@@ -10,35 +10,19 @@ import type { MapPoint } from "@/components/MapView";
 import { api, ErrorNote, km, mins } from "@/components/ui";
 import { brl, quoteFare } from "@/domain/pricing";
 import { cityOf, pulseText, usePulse, useTariffs } from "./usePublic";
-import { OrbitField } from "./OrbitField";
+import { LiveTrip } from "./LiveTrip";
+import { OrbiMark } from "@/components/OrbiMark";
 import { asset, STATIC } from "@/lib/site-mode";
 
 export type HeroCity = { id: string; name: string; state: string; lat: number; lng: number; radiusKm: number; slug?: string };
 type Trip = { distanceM: number; durationS: number; geometry: [number, number][]; source: "osrm" | "estimate"; originInArea: boolean; destInArea: boolean };
 
-const WORDS = ["Seu caminho.", "Seu destino.", "Sua órbita."];
+// Parte 1 da home: o título diz de cara o que é a Orbi (pedir carro, preço antes, gente da região).
+const WORDS = ["Peça seu carro.", "Saiba o preço.", "Vá de Orbi."];
 const EASE = [.2, .8, .2, 1] as const;
 
 /** Evento disparado por outras partes da página (o panorama do Vale) para preencher o destino daqui. */
 export const DEST_EVENT = "prumo:destino";
-
-/**
- * Arte do topo: a constelação do Vale do Aço (ver OrbitField). Cidades são sistemas orbitais,
- * carros são cometas e cada corrida pedida atrai o carro mais próximo.
- */
-function OrbitArt({ dim, reduce, labels }: { dim: boolean; reduce: boolean; labels: string[] }) {
-  return (
-    <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0" initial={false}
-      animate={{ opacity: dim ? .28 : 1, scale: dim ? 1.04 : 1 }} transition={{ duration: reduce ? 0 : 1, ease: EASE }}>
-      {/* Profundidade: um brilho azul-noturno atrás do texto, e a grade de pontos da marca */}
-      <div className="absolute inset-0" style={{ background: "radial-gradient(60% 70% at 18% 40%, rgb(10 30 61 / .9), transparent 70%)" }} />
-      <div className="orbit-grid absolute inset-0 opacity-70" />
-      <OrbitField labels={labels} reduce={reduce} />
-      {/* Fusão com a faixa de baixo */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-deep to-transparent" />
-    </motion.div>
-  );
-}
 
 function Readout({ label, value }: { label: string; value: string }) {
   return <div><p className="mono-label text-on-deep-muted">{label}</p><p className="num mt-1 text-2xl font-semibold tracking-tight">{value}</p></div>;
@@ -48,7 +32,7 @@ function Readout({ label, value }: { label: string; value: string }) {
  * Abertura do site: preto profundo com o arco da marca. Minimalista em repouso;
  * ao escolher um endereço, o título recolhe e o arco se abre numa janela de mapa com a rota, a distância e o preço.
  */
-export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primeira operação · Vale do Aço · MG", lead = "Mobilidade urbana mais simples, rápida e segura. Mais respeito para quem dirige, mais confiança para quem chega." }: {
+export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "App de corridas · Vale do Aço · MG", lead = "A Orbi é o app de corridas do Vale do Aço. Diga para onde vai, veja o preço na hora e um motorista da região te busca. Experimente aqui embaixo, sem cadastro." }: {
   cities: HeroCity[]; signedIn?: string | null;
   /** Título em três linhas; a última fica com o degradê da marca. */
   words?: string[]; eyebrow?: string; lead?: string;
@@ -176,10 +160,9 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
   );
 
   return (
-    <section className="on-deep relative isolate overflow-hidden bg-deep text-on-deep">
-      <OrbitArt dim={traveling} reduce={reduce} labels={cities.map((c) => c.name)} />
+    <section className="hero-light on-deep relative isolate overflow-hidden bg-deep text-on-deep">
 
-      <div className={`relative z-10 mx-auto grid w-full max-w-[1280px] gap-8 px-5 pt-24 pb-14 md:px-10 lg:min-h-[100svh] lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-12 lg:pt-28 lg:pb-16 ${traveling ? "lg:items-start" : "lg:items-center"}`}>
+      <div className={`relative z-10 mx-auto grid w-full max-w-[1440px] gap-8 px-5 pt-8 pb-12 md:px-10 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[minmax(0,700px)_minmax(0,1fr)] lg:gap-12 lg:pt-10 lg:pb-12 ${traveling ? "lg:items-start" : "lg:items-center"}`}>
         <motion.div layout={!reduce} transition={{ layout: { duration: .8, ease: EASE } }} className="w-full">
           {/* Título: recolhe quando a pessoa escolhe um endereço */}
           <motion.div initial={false} animate={traveling ? { height: 0, opacity: 0, y: -24, filter: "blur(8px)" } : { height: "auto", opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -188,7 +171,7 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
               <span className="relative grid size-2 place-items-center"><span className="pulse-ring absolute size-2 rounded-full bg-[#00E1FF]" /><span className="size-1.5 rounded-full bg-[#00E1FF]" /></span>
               {eyebrow}
             </p>
-            <h1 className="display mt-7 text-[clamp(3rem,5.8vw,5.6rem)] leading-[.92]">
+            <h1 className="display mt-7 text-[clamp(2.8rem,5.2vw,5.2rem)] leading-[.95]">
               {words.map((w, i) => (
                 <motion.span key={w} className={`block pb-[.06em] ${i === words.length - 1 ? "text-grad" : ""}`} initial={reduce ? false : { opacity: 0, y: 28, filter: "blur(6px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: .7, delay: .15 + i * .12, ease: EASE }}>{w}</motion.span>
@@ -197,7 +180,7 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
             <p className="mt-6 mb-8 max-w-[44ch] text-lg leading-relaxed text-on-deep-muted">{lead}</p>
           </motion.div>
 
-          <motion.form id="pedir" onSubmit={submit} className="scroll-mt-24 rounded-[28px] border border-[color-mix(in_srgb,var(--on-deep)_10%,transparent)] bg-[color-mix(in_srgb,#0A1E3D_55%,transparent)] p-3 shadow-[0_40px_90px_-40px_rgb(3_86_197/.55)] backdrop-blur-xl sm:p-4"
+          <motion.form id="pedir" onSubmit={submit} className="scroll-mt-24 rounded-[28px] border border-line bg-surface-2 p-3 sm:p-4"
             initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .5, ease: EASE }}>
             {/* No modo viagem, um título curto dentro do cartão, no lugar do grande */}
             <motion.div initial={false} animate={traveling ? { opacity: 1, height: "auto" } : { opacity: 0, height: 0 }} transition={{ duration: reduce ? 0 : .6, delay: traveling && !reduce ? .3 : 0, ease: EASE }}
@@ -254,6 +237,13 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
 
         {/* Lado direito: em repouso, só a arte e o pulso da cidade; com endereço, a janela do mapa */}
         <div className="relative min-h-0 lg:h-[calc(100svh-11rem)] lg:self-center">
+          {/* Em repouso: a corrida pedida acontecendo no celular, com o símbolo da Orbi atrás */}
+          {!traveling && (
+            <div className="relative grid place-items-center py-4 lg:h-full lg:py-0">
+              <OrbiMark size={560} className="hero-mark absolute max-w-[110%]" gid="hero-mark" />
+              <LiveTrip className="relative origin-center scale-[.88] sm:scale-100" />
+            </div>
+          )}
           <AnimatePresence>
             {!traveling && live && (
               <motion.p key="pulse" role="status" data-testid="pulse" initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
@@ -262,7 +252,7 @@ export function Hero({ cities, signedIn = null, words = WORDS, eyebrow = "Primei
               </motion.p>
             )}
             {traveling && (
-              <motion.div key="map" className="relative h-[460px] overflow-hidden rounded-[32px] border border-[color-mix(in_srgb,var(--on-deep)_12%,transparent)] bg-[#E9EEF5] shadow-[0_50px_120px_-40px_rgb(3_86_197/.6)] lg:h-full"
+              <motion.div key="map" className="relative h-[460px] overflow-hidden rounded-[32px] border border-[color-mix(in_srgb,var(--on-deep)_12%,transparent)] bg-[#E9EEF5] lg:h-full"
                 initial={reduce ? false : { clipPath: "circle(0% at 85% 85%)", opacity: 0 }} animate={{ clipPath: "circle(150% at 85% 85%)", opacity: 1 }}
                 exit={reduce ? undefined : { clipPath: "circle(0% at 85% 85%)", opacity: 0 }} transition={{ duration: reduce ? 0 : 1.1, ease: EASE }}>
                 <MapView cooperative tilt={45} areas={areas} points={points} route={trip?.geometry ?? null}

@@ -1,7 +1,7 @@
 import { ViewTransition } from "react";
 import { eq } from "drizzle-orm";
 import { PlumbLine, SiteFooter, SiteNav } from "@/components/site/Chrome";
-import { CookieNotice, Spotlight } from "@/components/site/Fx";
+import { CookieNotice } from "@/components/site/Fx";
 import { getDb, schema as s } from "@/db";
 import { currentUser } from "@/server/auth";
 
@@ -21,10 +21,9 @@ const ORG = {
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [user, cities] = await Promise.all([currentUser(), activeCities()]);
   return (
-    <>
+    <div className="site-one">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG) }} />
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:rounded-lg focus:bg-surface focus:p-3">Ir para o conteúdo</a>
-      <Spotlight />
       <SiteNav account={user ? HOME[user.role] : null} />
       <PlumbLine />
       {/* Troca de página com transição suave (onde o navegador permite; nos demais, troca normal). */}
@@ -33,6 +32,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       </ViewTransition>
       <SiteFooter cities={cities} />
       <CookieNotice />
-    </>
+    </div>
   );
 }

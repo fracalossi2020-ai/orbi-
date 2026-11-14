@@ -51,8 +51,8 @@ export function Destinations({ city }: { city: string }) {
     finally { setBusy(null); }
   };
   return (
-    <section aria-labelledby="destinos" className="relative bg-surface text-ink">
-      <div className="mx-auto max-w-[1280px] px-5 py-20 md:px-10 md:py-24">
+    <section aria-labelledby="destinos" className="relative bg-bg text-ink">
+      <div className="mx-auto max-w-[1440px] px-5 py-20 md:px-10 md:py-24">
         <Reveal>
           <p className="mono-label text-brand">Destinos de {city}</p>
           <h2 id="destinos" className="display mt-3 text-[clamp(2.2rem,4.8vw,4.2rem)] leading-[.95]">Para onde a cidade vai.</h2>

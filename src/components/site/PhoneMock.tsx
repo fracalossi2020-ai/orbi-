@@ -7,7 +7,7 @@ import { Logo } from "@/components/Logo";
 /** Moldura de celular, só visual: tela escura, ilha no topo e reflexo, como nos aparelhos do manual da marca. */
 export function PhoneFrame({ children, className = "", tone = "light" }: { children: React.ReactNode; className?: string; tone?: "light" | "dark" }) {
   return (
-    <div aria-hidden="true" className={`relative mx-auto w-[280px] rounded-[48px] bg-[#05080F] p-2.5 shadow-[0_60px_120px_-40px_rgb(3_86_197/.7),0_30px_60px_-30px_rgb(0_0_0/.8),inset_0_0_0_1.5px_rgb(255_255_255/.14)] ${className}`}>
+    <div aria-hidden="true" className={`relative mx-auto w-[280px] rounded-[48px] bg-[#05080F] p-2.5 shadow-[0_30px_60px_-30px_rgb(2_6_14/.45),inset_0_0_0_1.5px_rgb(255_255_255/.14)] ${className}`}>
       <div className={`relative h-[570px] overflow-hidden rounded-[39px] ${tone === "dark" ? "bg-[#040B18]" : "bg-[#e8eeea]"}`}>
         {children}
         <span className="pointer-events-none absolute top-2.5 left-1/2 z-40 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-black" />

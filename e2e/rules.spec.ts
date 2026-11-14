@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { adminApi, apiClient, approvedDriverApi, BASE, DRIVER_ADDRESS, DRIVER_REG, VEHICLE_REG, lastCode, login, makeCnh, makeCpf, passengerApi, RIDE_BODY, unique, uniquePhone } from "./helpers";
+import { adminApi, apiClient, approvedDriverApi, BASE, DRIVER_ADDRESS, DRIVER_REG, VEHICLE_REG, lastCode, login, makeCnh, makeCpf, passengerApi, RIDE_BODY, signUp, unique, uniquePhone } from "./helpers";
 
 test.describe.configure({ mode: "serial" });
 
@@ -293,14 +293,20 @@ test("tema: o servidor entrega a escolha pronta, o aparelho vale sem escolha e o
   expect(none).not.toContain("localStorage.getItem(\"prumo-theme\")");
 
   const bg = (page: import("@playwright/test").Page) => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  const LIGHT = "rgb(245, 247, 250)"; // #F5F7FA, fundo claro da identidade Orbi
+  const LIGHT = "rgb(245, 247, 250)"; // #F5F7FA, fundo claro dos apps
+  const SITE = "rgb(255, 255, 255)"; // o site público é sempre branco, qualquer que seja o tema
 
-  // Sem escolha salva, o tema do aparelho decide
+  // O site não segue o tema: branco no aparelho escuro e sem botão de tema
   const dark = await browser.newContext({ baseURL: BASE, colorScheme: "dark" });
   const pd = await dark.newPage();
   await pd.goto("/status");
+  expect(await bg(pd)).toBe(SITE);
+  await expect(pd.getByRole("button", { name: /Usar modo (claro|escuro)/ })).toHaveCount(0);
+
+  // Nos apps, sem escolha salva, o tema do aparelho decide; o botão grava a escolha em cookie e ela sobrevive a recarregar
+  await signUp(pd, "passageiro", uniquePhone(), "Tema Escuro Teste");
+  await pd.waitForURL(/passageiro/);
   expect(await bg(pd)).not.toBe(LIGHT);
-  // O botão grava a escolha em cookie e ela sobrevive a recarregar, mesmo contra o tema do aparelho
   await pd.getByRole("button", { name: "Usar modo claro" }).first().click();
   expect(await bg(pd)).toBe(LIGHT);
   expect((await dark.cookies()).find((k) => k.name === "prumo-theme")?.value).toBe("light");
@@ -310,7 +316,8 @@ test("tema: o servidor entrega a escolha pronta, o aparelho vale sem escolha e o
 
   const light = await browser.newContext({ baseURL: BASE, colorScheme: "light" });
   const pl = await light.newPage();
-  await pl.goto("/status");
+  await signUp(pl, "passageiro", uniquePhone(), "Tema Claro Teste");
+  await pl.waitForURL(/passageiro/);
   expect(await bg(pl)).toBe(LIGHT);
   await pl.getByRole("button", { name: "Usar modo escuro" }).first().click();
   expect(await bg(pl)).not.toBe(LIGHT);

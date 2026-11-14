@@ -13,7 +13,6 @@ const config: NextConfig = {
   // Não anuncia qual tecnologia o servidor usa.
   poweredByHeader: false,
   serverExternalPackages: ["@electric-sql/pglite", "pg"],
-  transpilePackages: ["three"],
   ...(staticSite ? {
     output: "export" as const,
     basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,

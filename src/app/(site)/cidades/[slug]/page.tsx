@@ -20,12 +20,6 @@ async function cityBySlug(slug: string) {
   } catch { return null; }
 }
 
-/** Versão vitrine (páginas prontas): uma página por cidade ativa, gerada no build. No servidor normal, nada muda. */
-export async function generateStaticParams() {
-  if (!STATIC) return [];
-  return (await publicTariffs()).map((c) => ({ slug: c.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const city = await cityBySlug((await params).slug);
   if (!city) return { title: "Cidade não encontrada" };
@@ -57,8 +51,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
       {/* Tarifa aberta: os números exatos do painel, para qualquer pessoa conferir. */}
       {tariffs.length > 0 && (
         <section aria-labelledby="tarifa" className="on-deep relative overflow-hidden bg-deep text-on-deep">
-          <div aria-hidden="true" className="grid-lines absolute inset-0" />
-          <div className="relative mx-auto max-w-[1280px] px-5 py-20 md:px-10 md:py-24">
+          <div className="relative mx-auto max-w-[1440px] px-5 py-20 md:px-10 md:py-24">
             <Reveal className="grid gap-5 md:grid-cols-[1.2fr_1fr] md:items-end">
               <div>
                 <p className="mono-label text-on-deep-muted">Tarifa aberta · {city.name}</p>
@@ -87,7 +80,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
 
       {others.length > 0 && (
         <section className="on-deep bg-deep text-on-deep">
-          <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-5 px-5 py-14 md:px-10">
+          <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-5 px-5 py-14 md:px-10">
             <p className="display text-2xl md:text-3xl">A Orbi também roda em</p>
             <div className="flex flex-wrap gap-2">
               {others.map((o) => <Link key={o.id} href={`/cidades/${o.slug}`} className="btn btn-line-deep">{o.name} <Icon name="arrow" size={16} /></Link>)}
